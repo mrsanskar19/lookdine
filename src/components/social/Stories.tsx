@@ -43,6 +43,26 @@ export function Stories() {
                 </span>
               </div>
             </Link>
+            <Link
+              key={story.id}
+              to={story.name === 'Your Story' ? '/stories/create' : `/stories/view/${story.id}`}
+              className="flex flex-col items-center gap-1 cursor-pointer"
+            >
+            <div key={story.id} className="flex flex-col items-center gap-1 cursor-pointer">
+              <div className={cn(
+                "rounded-full p-[2px]",
+                story.hasStory ? "bg-gradient-to-tr from-yellow-400 via-orange-500 to-red-500" : "bg-transparent"
+              )}>
+                <Avatar className="h-14 w-14 border-2 border-background">
+                  <AvatarImage src={story.avatar} alt={story.name} />
+                  <AvatarFallback>{story.name[0]}</AvatarFallback>
+                </Avatar>
+              </div>
+              <span className="text-xs font-medium text-muted-foreground">
+                {story.name.split(' ')[0]}
+              </span>
+            </Link>
+            </div>
           ))}
         </div>
         <ScrollBar orientation="horizontal" className="hidden" />
