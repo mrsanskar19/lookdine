@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAppMode } from '@/context/AppModeContext';
 import { cn } from '@/lib/utils';
+import { Stories } from '@/components/social/Stories';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   showSearch?: boolean;
@@ -11,16 +13,18 @@ interface HeaderProps {
 
 export function Header({ showSearch = false, title }: HeaderProps) {
   const { isTeenMode } = useAppMode();
+  const navigate = useNavigate();
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/50 bg-card/95 backdrop-blur-lg safe-top">
-      <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3">
+      <div className="mx-auto flex w-full max-w-md md:max-w-full items-center justify-between px-4 py-3">
         <div className="flex items-center gap-2">
           <div
             className={cn(
               "flex h-9 w-9 items-center justify-center rounded-xl font-bold text-primary-foreground",
               isTeenMode ? "gradient-teen" : "gradient-primary"
             )}
+            onClick={() => navigate('/')}
           >
             L
           </div>
@@ -32,13 +36,13 @@ export function Header({ showSearch = false, title }: HeaderProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="iconSm" className="relative">
+          <Button variant="ghost" size="iconSm" className="relative" onClick={() => navigate('/notifications')}>
             <Bell className="h-5 w-5" />
             <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
               3
             </span>
           </Button>
-          <Button variant="ghost" size="iconSm">
+          <Button variant="ghost" size="iconSm" onClick={() => navigate('/settings')}>
             <Settings className="h-5 w-5" />
           </Button>
         </div>
@@ -55,6 +59,8 @@ export function Header({ showSearch = false, title }: HeaderProps) {
           </div>
         </div>
       )}
+
+      <Stories />
     </header>
   );
 }

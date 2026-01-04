@@ -5,7 +5,8 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { chatConversations } from '@/data/mockData';
-import { Search, Check, CheckCheck, Store } from 'lucide-react';
+import { Search, Check, CheckCheck, Store, Trash2, XCircle, Image as ImageIcon, AlertTriangle, MoreVertical } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const ChatPage = () => {
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
@@ -18,6 +19,11 @@ const ChatPage = () => {
     return (
       <AppLayout title="Messages">
         <div className="space-y-4">
+          <div className="bg-yellow-100 dark:bg-yellow-900/30 p-3 rounded-lg flex items-center gap-2 text-sm text-yellow-800 dark:text-yellow-200">
+             <AlertTriangle className="h-4 w-4 shrink-0" />
+             Chat will be Remove after 12AM everyday except 6 chats
+          </div>
+
           {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -80,7 +86,7 @@ const ChatPage = () => {
   return (
     <AppLayout showHeader={false}>
       {/* Chat Header */}
-      <div className="sticky -top-4 -mx-4 mb-4 flex items-center gap-3 border-b border-border bg-card/95 backdrop-blur-lg p-4">
+      <div className="sticky -top-4 -mx-4 mb-4 flex items-center gap-3 border-b border-border bg-card/95 backdrop-blur-lg p-4 z-10">
         <Button variant="ghost" size="iconSm" onClick={() => setSelectedChat(null)}>
           ←
         </Button>
@@ -93,6 +99,21 @@ const ChatPage = () => {
           <h3 className="font-medium">{selectedConversation?.name}</h3>
           <p className="text-xs text-muted-foreground">Online</p>
         </div>
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="iconSm">
+                    <MoreVertical className="h-5 w-5" />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuItem className="text-destructive">
+                    <Trash2 className="mr-2 h-4 w-4" /> Delete Chat
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                    <XCircle className="mr-2 h-4 w-4" /> Clear Chat
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Messages */}
@@ -126,6 +147,9 @@ const ChatPage = () => {
       {/* Message Input */}
       <div className="fixed bottom-24 left-4 right-4 max-w-md mx-auto">
         <div className="flex items-center gap-2 rounded-2xl bg-card border border-border p-2 shadow-soft">
+          <Button variant="ghost" size="iconSm">
+             <ImageIcon className="h-5 w-5 text-muted-foreground" />
+          </Button>
           <Input
             value={message}
             onChange={(e) => setMessage(e.target.value)}
