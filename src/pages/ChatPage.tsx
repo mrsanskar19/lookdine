@@ -7,12 +7,35 @@ import { Input } from '@/components/ui/input';
 import { chatConversations } from '@/data/mockData';
 import { Search, Check, CheckCheck, Store, Trash2, XCircle, Image as ImageIcon, AlertTriangle, MoreVertical } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { toast } from 'sonner';
 
 const ChatPage = () => {
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
   const [message, setMessage] = useState('');
+  // Local state for cleared/deleted chats demo
+  const [clearedChats, setClearedChats] = useState<string[]>([]);
+  const [deletedChats, setDeletedChats] = useState<string[]>([]);
 
   const selectedConversation = chatConversations.find((c) => c.id === selectedChat);
+
+  const handleClearChat = () => {
+    if (selectedChat) {
+        setClearedChats([...clearedChats, selectedChat]);
+        toast.success("Chat cleared");
+    }
+  };
+
+  const handleDeleteChat = () => {
+    if (selectedChat) {
+        setDeletedChats([...deletedChats, selectedChat]);
+        setSelectedChat(null);
+        toast.success("Chat deleted");
+    }
+  };
+
+  const handleSendPhoto = () => {
+      toast.info("Opening gallery...");
+  };
 
   // Chat list view
   if (!selectedChat) {
@@ -42,7 +65,7 @@ const ChatPage = () => {
 
           {/* Conversations */}
           <div className="space-y-2">
-            {chatConversations.map((chat) => (
+            {chatConversations.filter(c => !deletedChats.includes(c.id)).map((chat) => (
               <Card
                 key={chat.id}
                 className="flex items-center gap-3 p-3 cursor-pointer hover:shadow-soft transition-all"
@@ -106,10 +129,10 @@ const ChatPage = () => {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuItem className="text-destructive">
+                <DropdownMenuItem className="text-destructive" onClick={handleDeleteChat}>
                     <Trash2 className="mr-2 h-4 w-4" /> Delete Chat
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={handleClearChat}>
                     <XCircle className="mr-2 h-4 w-4" /> Clear Chat
                 </DropdownMenuItem>
             </DropdownMenuContent>
@@ -118,36 +141,44 @@ const ChatPage = () => {
 
       {/* Messages */}
       <div className="flex-1 space-y-4 pb-20">
-        {/* Sample messages */}
-        <div className="flex justify-start">
-          <div className="max-w-[75%] rounded-2xl rounded-bl-sm bg-muted px-4 py-2">
-            <p className="text-sm">Hey! How's it going? 👋</p>
-            <span className="text-[10px] text-muted-foreground">2:30 PM</span>
-          </div>
-        </div>
+        {!clearedChats.includes(selectedChat!) ? (
+            <>
+                {/* Sample messages */}
+                <div className="flex justify-start">
+                <div className="max-w-[75%] rounded-2xl rounded-bl-sm bg-muted px-4 py-2">
+                    <p className="text-sm">Hey! How's it going? 👋</p>
+                    <span className="text-[10px] text-muted-foreground">2:30 PM</span>
+                </div>
+                </div>
 
-        <div className="flex justify-end">
-          <div className="max-w-[75%] rounded-2xl rounded-br-sm bg-primary px-4 py-2 text-primary-foreground">
-            <p className="text-sm">Hi! I'm good, thanks! Just browsing some cafes nearby.</p>
-            <div className="flex items-center justify-end gap-1">
-              <span className="text-[10px] opacity-80">2:32 PM</span>
-              <CheckCheck className="h-3 w-3" />
+                <div className="flex justify-end">
+                <div className="max-w-[75%] rounded-2xl rounded-br-sm bg-primary px-4 py-2 text-primary-foreground">
+                    <p className="text-sm">Hi! I'm good, thanks! Just browsing some cafes nearby.</p>
+                    <div className="flex items-center justify-end gap-1">
+                    <span className="text-[10px] opacity-80">2:32 PM</span>
+                    <CheckCheck className="h-3 w-3" />
+                    </div>
+                </div>
+                </div>
+
+                <div className="flex justify-start">
+                <div className="max-w-[75%] rounded-2xl rounded-bl-sm bg-muted px-4 py-2">
+                    <p className="text-sm">{selectedConversation?.lastMessage}</p>
+                    <span className="text-[10px] text-muted-foreground">Just now</span>
+                </div>
+                </div>
+            </>
+        ) : (
+            <div className="flex h-full items-center justify-center text-muted-foreground text-sm">
+                Chat cleared
             </div>
-          </div>
-        </div>
-
-        <div className="flex justify-start">
-          <div className="max-w-[75%] rounded-2xl rounded-bl-sm bg-muted px-4 py-2">
-            <p className="text-sm">{selectedConversation?.lastMessage}</p>
-            <span className="text-[10px] text-muted-foreground">Just now</span>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Message Input */}
       <div className="fixed bottom-24 left-4 right-4 max-w-md mx-auto">
         <div className="flex items-center gap-2 rounded-2xl bg-card border border-border p-2 shadow-soft">
-          <Button variant="ghost" size="iconSm">
+          <Button variant="ghost" size="iconSm" onClick={handleSendPhoto}>
              <ImageIcon className="h-5 w-5 text-muted-foreground" />
           </Button>
           <Input
