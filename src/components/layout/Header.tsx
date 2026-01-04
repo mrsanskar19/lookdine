@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAppMode } from '@/context/AppModeContext';
 import { cn } from '@/lib/utils';
+import { Stories } from '@/components/social/Stories';
 
 interface HeaderProps {
   showSearch?: boolean;
@@ -14,7 +15,7 @@ export function Header({ showSearch = false, title }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/50 bg-card/95 backdrop-blur-lg safe-top">
-      <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3">
+      <div className="mx-auto flex w-full max-w-md md:max-w-full items-center justify-between px-4 py-3">
         <div className="flex items-center gap-2">
           <div
             className={cn(
@@ -55,6 +56,8 @@ export function Header({ showSearch = false, title }: HeaderProps) {
           </div>
         </div>
       )}
+
+      <Stories />
     </header>
   );
 }

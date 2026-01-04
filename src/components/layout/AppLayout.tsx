@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { BottomNavigation } from './BottomNavigation';
+import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 
 interface AppLayoutProps {
@@ -11,12 +12,17 @@ interface AppLayoutProps {
 
 export function AppLayout({ children, showSearch = false, title, showHeader = true }: AppLayoutProps) {
   return (
-    <div className="app-container min-h-screen bg-background">
-      {showHeader && <Header showSearch={showSearch} title={title} />}
-      <main className="page-content animate-fade-in">
-        {children}
-      </main>
-      <BottomNavigation />
+    <div className="flex min-h-screen bg-background">
+      <Sidebar />
+      <div className="flex-1 flex flex-col min-w-0">
+        {showHeader && <Header showSearch={showSearch} title={title} />}
+        <main className="flex-1 animate-fade-in pb-20 md:pb-0">
+          <div className="mx-auto max-w-md md:max-w-full md:px-6 md:py-6">
+            {children}
+          </div>
+        </main>
+        <BottomNavigation />
+      </div>
     </div>
   );
 }
