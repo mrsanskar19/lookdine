@@ -10,7 +10,6 @@ interface Story {
   hasStory: boolean;
 }
 
-// Mock stories data
 const stories: Story[] = [
   { id: '1', name: 'Your Story', avatar: 'https://github.com/shadcn.png', hasStory: false },
   { id: '2', name: 'Priya', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100', hasStory: true },
@@ -27,42 +26,26 @@ export function Stories() {
       <ScrollArea className="w-full whitespace-nowrap">
         <div className="flex w-max space-x-4 px-4">
           {stories.map((story) => (
-            <Link key={story.id} to={`/stories/${story.id}`}>
-              <div className="flex flex-col items-center gap-1 cursor-pointer">
-                <div className={cn(
-                  "rounded-full p-[2px]",
-                  story.hasStory ? "bg-gradient-to-tr from-yellow-400 via-orange-500 to-red-500" : "bg-transparent"
-                )}>
-                  <Avatar className="h-14 w-14 border-2 border-background">
-                    <AvatarImage src={story.avatar} alt={story.name} />
-                    <AvatarFallback>{story.name[0]}</AvatarFallback>
-                  </Avatar>
-                </div>
-                <span className="text-xs font-medium text-muted-foreground">
-                  {story.name.split(' ')[0]}
-                </span>
-              </div>
-            </Link>
             <Link
-              key={story.id}
+              key={story.id} // Key moved to the outermost element
               to={story.name === 'Your Story' ? '/stories/create' : `/stories/view/${story.id}`}
-              className="flex flex-col items-center gap-1 cursor-pointer"
+              className="flex flex-col items-center gap-1 cursor-pointer group"
             >
-            <div key={story.id} className="flex flex-col items-center gap-1 cursor-pointer">
               <div className={cn(
-                "rounded-full p-[2px]",
-                story.hasStory ? "bg-gradient-to-tr from-yellow-400 via-orange-500 to-red-500" : "bg-transparent"
+                "rounded-full p-[2px] transition-transform active:scale-95",
+                story.hasStory 
+                  ? "bg-gradient-to-tr from-yellow-400 via-orange-500 to-red-500" 
+                  : "bg-muted/50"
               )}>
                 <Avatar className="h-14 w-14 border-2 border-background">
                   <AvatarImage src={story.avatar} alt={story.name} />
                   <AvatarFallback>{story.name[0]}</AvatarFallback>
                 </Avatar>
               </div>
-              <span className="text-xs font-medium text-muted-foreground">
+              <span className="text-xs font-medium text-muted-foreground truncate w-16 text-center">
                 {story.name.split(' ')[0]}
               </span>
             </Link>
-            </div>
           ))}
         </div>
         <ScrollBar orientation="horizontal" className="hidden" />
