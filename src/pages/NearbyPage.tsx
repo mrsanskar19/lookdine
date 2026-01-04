@@ -1,27 +1,64 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { VenueList } from '@/components/venue/VenueList';
 import { PersonCard } from '@/components/social/PersonCard';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { nearbyVenues, nearbyPeople } from '@/data/mockData';
 import { useAppMode } from '@/context/AppModeContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Users, Utensils, Coffee, MapPin } from 'lucide-react';
+import { MapComponent } from '@/components/map/MapComponent';
+import { fetchVenues, fetchPeople } from '@/services/api';
+import { VenueData } from '@/components/venue/VenueCard';
+import { PersonData } from '@/components/social/PersonCard';
 
 const NearbyPage = () => {
   const { isTeenMode } = useAppMode();
   const [activeTab, setActiveTab] = useState('all');
   const [connectionFilter, setConnectionFilter] = useState<'all' | 'dating' | 'friendship'>('all');
+  const [venues, setVenues] = useState<VenueData[]>([]);
+  const [people, setPeople] = useState<PersonData[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredPeople = nearbyPeople.filter((person) => {
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [venuesData, peopleData] = await Promise.all([
+          fetchVenues(),
+          fetchPeople()
+        ]);
+        setVenues(venuesData);
+        setPeople(peopleData);
+      } catch (error) {
+        console.error("Failed to fetch data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, []);
+
+  const filteredPeople = people.filter((person) => {
     if (connectionFilter === 'all') return true;
     return person.connectionType === connectionFilter;
   });
 
+  if (loading) {
+    return (
+      <AppLayout showSearch title="Nearby">
+        <div className="flex h-[50vh] items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+        </div>
+      </AppLayout>
+    );
+  }
+
   return (
     <AppLayout showSearch title="Nearby">
       <div className="space-y-4">
+        {/* Map Section */}
+        <MapComponent venues={venues} people={!isTeenMode ? people : []} />
+
         {/* Location indicator */}
         <div className="flex items-center gap-2 rounded-xl bg-primary/5 p-3">
           <MapPin className="h-5 w-5 text-primary" />
@@ -29,7 +66,7 @@ const NearbyPage = () => {
             <p className="text-sm font-medium">Current Location</p>
             <p className="text-xs text-muted-foreground">Koramangala, Bangalore</p>
           </div>
-          <Button variant="soft" size="sm" className="ml-auto">
+          <Button variant="ghost" size="sm" className="ml-auto">
             Change
           </Button>
         </div>
@@ -59,7 +96,7 @@ const NearbyPage = () => {
                 <Coffee className="h-5 w-5 text-primary" />
                 <h2 className="font-semibold">Cafés & Restaurants Nearby</h2>
               </div>
-              <VenueList venues={nearbyVenues} horizontal />
+            <VenueList venues={venues} horizontal />
             </div>
 
             {/* People Section - Adults only */}
@@ -70,7 +107,7 @@ const NearbyPage = () => {
                   <h2 className="font-semibold">People Nearby</h2>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                  {nearbyPeople.slice(0, 4).map((person) => (
+                  {people.slice(0, 4).map((person) => (
                     <PersonCard key={person.id} person={person} />
                   ))}
                 </div>
@@ -92,7 +129,7 @@ const NearbyPage = () => {
               ))}
             </div>
 
-            <VenueList venues={nearbyVenues} />
+            <VenueList venues={venues} />
           </TabsContent>
 
           {!isTeenMode && (
