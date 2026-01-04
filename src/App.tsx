@@ -11,6 +11,7 @@ import BookingPage from "./pages/BookingPage";
 import DecorationPage from "./pages/DecorationPage";
 import ChatPage from "./pages/ChatPage";
 import ProfilePage from "./pages/ProfilePage";
+import StoryPage from "./pages/StoryPage";
 import NotFound from "./pages/NotFound";
 
 // Auth
@@ -49,6 +50,7 @@ const App = () => (
             <Route path="/decorate" element={<DecorationPage />} />
             <Route path="/chat" element={<ChatPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/stories/:id" element={<StoryPage />} />
 
             {/* Auth Routes */}
             <Route path="/auth/login" element={<Login />} />
