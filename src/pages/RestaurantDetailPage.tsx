@@ -45,18 +45,19 @@ const RestaurantDetailPage = () => {
         {/* Top Navigation */}
         <div className="absolute left-4 right-4 top-4 flex items-center justify-between">
           <Link to="/">
-            <Button variant="glass" size="icon">
+            <Button variant="glass" size="icon" aria-label="Go back">
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
           <div className="flex gap-2">
-            <Button variant="glass" size="icon">
+            <Button variant="glass" size="icon" aria-label="Share venue">
               <Share2 className="h-5 w-5" />
             </Button>
             <Button
               variant="glass"
               size="icon"
               onClick={() => setIsFavorite(!isFavorite)}
+              aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
             >
               <Heart
                 className={`h-5 w-5 ${isFavorite ? 'fill-destructive text-destructive' : ''}`}
@@ -107,11 +108,11 @@ const RestaurantDetailPage = () => {
           </Button>
         </Link>
         <Link to={`/decorate?venue=${venue.id}`}>
-          <Button variant="outline" size="icon" className="h-11 w-11">
+          <Button variant="outline" size="icon" className="h-11 w-11" aria-label="Decorate table">
             🎉
           </Button>
         </Link>
-        <Button variant="outline" size="icon" className="h-11 w-11">
+        <Button variant="outline" size="icon" className="h-11 w-11" aria-label="Call venue">
           <Phone className="h-5 w-5" />
         </Button>
       </div>
