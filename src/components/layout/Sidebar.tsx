@@ -1,31 +1,63 @@
-import { Home, MapPin, Calendar, MessageCircle, User, LogOut } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { Home, MapPin, Calendar, MessageCircle, User, LogOut, ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ThemeToggle } from '../theme';
 
-const navItems = [
-  { icon: Home, label: 'Home', path: '/' },
-  { icon: MapPin, label: 'Nearby', path: '/nearby' },
-  { icon: Calendar, label: 'Book', path: '/book' },
-  { icon: MessageCircle, label: 'Chat', path: '/chat' },
-  { icon: User, label: 'Profile', path: '/profile' },
-];
+interface SidebarProps {
+  title?: string;
+}
 
-export function Sidebar() {
+export function Sidebar({ title }: SidebarProps) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const navItems = [
+    { icon: Home, label: 'Home', path: '/' },
+    { icon: Search, label: 'Search', path: '/search' }, // Added Search redirect
+    { icon: MapPin, label: 'Nearby', path: '/nearby' },
+    { icon: Calendar, label: 'Book', path: '/book' },
+    { icon: MessageCircle, label: 'Chat', path: '/chat' },
+    { icon: User, label: 'Profile', path: '/profile' },
+  ];
 
   return (
-    <aside className="hidden md:flex h-screen w-64 flex-col border-r border-border/50 bg-card sticky top-0">
-      <div className="p-6">
-        <div className="flex items-center gap-2">
-           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary font-bold text-primary-foreground text-xl">
-             L
-           </div>
-           <span className="text-xl font-bold">LookDine</span>
-        </div>
+    <aside 
+      className={cn(
+        "hidden md:flex h-screen flex-col border-r bg-card sticky top-0 transition-all duration-300",
+        isCollapsed ? "w-20" : "w-64"
+      )}
+    >
+      {/* Header & Dynamic Title */}
+      <div className="p-4 flex items-center justify-between min-h-[73px]">
+        {!isCollapsed && (
+          <div className="flex items-center gap-2 overflow-hidden">
+            <div 
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded bg-primary font-bold text-white cursor-pointer"
+              onClick={() => navigate('/')}
+            >
+              L
+            </div>
+            <span className="text-lg font-bold truncate">
+              {title || "LookDine"}
+            </span>
+          </div>
+        )}
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className={cn(isCollapsed && "mx-auto")}
+        >
+          {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+        </Button>
       </div>
 
-      <nav className="flex-1 space-y-2 px-4 py-4">
+      {/* Navigation */}
+      <nav className="flex-1 space-y-1 px-3 py-2">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           const Icon = item.icon;
@@ -35,23 +67,51 @@ export function Sidebar() {
               key={item.path}
               to={item.path}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors hover:bg-muted",
-                isActive
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground"
+                "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
+                isActive ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"
               )}
             >
-              <Icon className={cn("h-5 w-5", isActive && "text-primary")} />
-              <span>{item.label}</span>
+              <Icon className="h-5 w-5 shrink-0" />
+              {!isCollapsed && <span>{item.label}</span>}
             </Link>
           );
         })}
       </nav>
+      <div className="mt-auto p-4 border-t flex items-center justify-between">
+  {!isCollapsed && <span className="text-sm font-medium">Appearance</span>}
+  <ThemeToggle />
+</div>
 
-      <div className="p-4 border-t border-border/50">
-        <Button variant="ghost" className="w-full justify-start gap-3 text-muted-foreground">
-          <LogOut className="h-5 w-5" />
-          <span>Log Out</span>
+      {/* Profile Section */}
+      <div className="p-3 border-t">
+        <div 
+          onClick={() => navigate('/profile')}
+          className={cn(
+            "flex items-center gap-3 p-2 rounded-lg hover:bg-muted cursor-pointer transition-all", 
+            isCollapsed && "justify-center"
+          )}
+        >
+          <Avatar className="h-9 w-9 shrink-0">
+            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarFallback>JD</AvatarFallback>
+          </Avatar>
+          {!isCollapsed && (
+            <div className="flex flex-col overflow-hidden">
+              <span className="text-sm font-semibold truncate">John Doe</span>
+              <span className="text-xs text-muted-foreground truncate">john@example.com</span>
+            </div>
+          )}
+        </div>
+        
+        <Button 
+          variant="ghost" 
+          className={cn(
+            "w-full mt-2 text-muted-foreground justify-start gap-3", 
+            isCollapsed && "px-0 justify-center"
+          )}
+        >
+          <LogOut className="h-5 w-5 shrink-0" />
+          {!isCollapsed && <span>Log Out</span>}
         </Button>
       </div>
     </aside>

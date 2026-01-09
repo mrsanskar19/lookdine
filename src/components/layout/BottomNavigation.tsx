@@ -1,12 +1,12 @@
-import { Home, MapPin, Calendar, MessageCircle, User } from 'lucide-react';
+import { Home, Search, MessageSquare, MapPin, User } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { icon: Home, label: 'Home', path: '/' },
   { icon: MapPin, label: 'Nearby', path: '/nearby' },
-  { icon: Calendar, label: 'Book', path: '/book' },
-  { icon: MessageCircle, label: 'Chat', path: '/chat' },
+  { icon: Search, label: 'Search', path: '/search' },
+  { icon: MessageSquare, label: 'Messages', path: '/chat' },
   { icon: User, label: 'Profile', path: '/profile' },
 ];
 
@@ -14,9 +14,10 @@ export function BottomNavigation() {
   const location = useLocation();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border/50 bg-card/95 backdrop-blur-lg safe-bottom md:hidden">
-      <div className="mx-auto flex max-w-md items-center justify-around py-2">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background/95 backdrop-blur-md md:hidden pb-safe">
+      <div className="flex items-center justify-around h-16">
         {navItems.map((item) => {
+          // Check if the current path matches the item path
           const isActive = location.pathname === item.path;
           const Icon = item.icon;
 
@@ -25,21 +26,33 @@ export function BottomNavigation() {
               key={item.path}
               to={item.path}
               className={cn(
-                "flex flex-col items-center gap-1 px-4 py-2 transition-all duration-200",
-                isActive
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground"
+                "relative flex flex-col items-center justify-center w-full h-full transition-all duration-300",
+                isActive ? "text-primary" : "text-muted-foreground"
               )}
             >
-              <div
+              {/* Active Indicator Background */}
+              {isActive && (
+                <div className="absolute inset-x-4 inset-y-2 bg-primary/10 rounded-xl -z-10 animate-in fade-in zoom-in duration-300" />
+              )}
+
+              <Icon 
                 className={cn(
-                  "flex h-8 w-8 items-center justify-center rounded-full transition-all duration-200",
-                  isActive && "bg-primary/10"
-                )}
-              >
-                <Icon className={cn("h-5 w-5", isActive && "animate-bounce-soft")} />
-              </div>
-              <span className="text-[10px] font-medium">{item.label}</span>
+                  "h-6 w-6 transition-transform duration-300",
+                  isActive ? "scale-110" : "scale-100"
+                )} 
+              />
+              
+              <span className={cn(
+                "text-[10px] mt-1 font-semibold transition-all duration-300",
+                isActive ? "opacity-100 translate-y-0" : "opacity-70"
+              )}>
+                {item.label}
+              </span>
+
+              {/* Bottom Dot Indicator */}
+              {isActive && (
+                <div className="absolute bottom-1 h-1 w-1 rounded-full bg-primary" />
+              )}
             </Link>
           );
         })}

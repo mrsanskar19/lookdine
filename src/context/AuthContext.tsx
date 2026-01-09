@@ -3,6 +3,7 @@ import { User, LoginCredentials, login as authLogin, logout as authLogout } from
 
 interface AuthContextType {
   user: User | null;
+  token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
@@ -14,18 +15,21 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true); // Start loading to check persistence
+  const [token, setToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check local storage for existing user session
     const storedUser = localStorage.getItem('auth_user');
-    if (storedUser) {
+    const storedToken = localStorage.getItem('jwt_token');
+    if (storedUser && storedToken) {
       try {
         setUser(JSON.parse(storedUser));
+        setToken(storedToken);
       } catch (e) {
         console.error("Failed to parse stored user", e);
         localStorage.removeItem('auth_user');
+        localStorage.removeItem('jwt_token');
       }
     }
     setIsLoading(false);
@@ -43,9 +47,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         body:JSON.stringify(credentials)
       })
       const data = await res.json();
-      console.log(data?.data?.role)
-      setUser(data?.data?.user);
-      localStorage.setItem('auth_user', JSON.stringify(user));
+      const userData = data?.data?.user;
+      const userToken = data?.data?.token;
+
+      if (userData && userToken) {
+        setUser(userData);
+        setToken(userToken);
+        localStorage.setItem('auth_user', JSON.stringify(userData));
+        localStorage.setItem('jwt_token', userToken);
+      } else {
+        throw new Error(data.message || 'Login failed: No user or token returned');
+      }
+
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred during login');
       throw err;
@@ -59,7 +72,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await authLogout();
       setUser(null);
+      setToken(null);
       localStorage.removeItem('auth_user');
+      localStorage.removeItem('jwt_token');
     } catch (err) {
       console.error("Logout failed", err);
     } finally {
@@ -70,6 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider value={{
       user,
+      token,
       isAuthenticated: !!user,
       isLoading,
       error,

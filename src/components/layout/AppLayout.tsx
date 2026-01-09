@@ -2,36 +2,48 @@ import { ReactNode } from 'react';
 import { BottomNavigation } from './BottomNavigation';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
-import { Stories } from '@/components/social/Stories';
+import { cn } from '@/lib/utils';
 
 interface AppLayoutProps {
   children: ReactNode;
-  showSearch?: boolean;
   title?: string;
   showHeader?: boolean;
-  showStories?: boolean;
 }
 
 export function AppLayout({ 
   children, 
-  showSearch = false, 
   title, 
   showHeader = true, 
-  showStories = false 
 }: AppLayoutProps) {
   return (
-    <div className="flex min-h-screen bg-background">
-      <Sidebar />
-      <div className="flex-1 flex flex-col min-w-0">
-        {showHeader && <Header showSearch={showSearch} title={title} />}
-        <main className="flex-1 animate-fade-in pb-20 md:pb-0">
-          <div className="mx-auto max-w-md md:max-w-full md:px-6 md:py-6">
-            {showStories && <Stories />}
+    <div className="flex min-h-screen bg-background text-foreground">
+      {/* 1. Sidebar: Desktop only (Hidden on mobile) */}
+      <Sidebar title={title} />
+
+      {/* 2. Main Content Wrapper */}
+      <div className="flex flex-1 flex-col min-w-0 relative">
+        
+        {/* 3. Header: Mobile only (md:hidden is inside Header) */}
+        {showHeader && <Header title={title} />}
+
+        {/* 4. Scrollable Content Area */}
+        <main className={cn(
+          "flex-1 w-full mx-auto transition-all duration-300",
+          /* Mobile: Add padding-bottom so content isn't hidden by BottomNav */
+          "pb-20 md:pb-0",
+          /* Desktop: Add standard spacing */
+          "md:p-6 lg:p-8"
+        )}>
+          {/* Inner Container: Constrains width for better readability on large screens */}
+          <div className="max-w-7xl mx-auto h-full">
             {children}
           </div>
         </main>
+
+        {/* 5. Bottom Navigation: Mobile only (md:hidden is inside BottomNav) */}
         <BottomNavigation />
       </div>
     </div>
   );
 }
+

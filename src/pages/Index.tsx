@@ -11,7 +11,7 @@ const Index = () => {
   const { isTeenMode } = useAppMode();
 
   return (
-    <AppLayout showSearch>
+    <AppLayout showSearch showStories>
       <div className="space-y-6 md:space-y-8">
         {/* Hero Section */}
         <div className="relative -mx-4 -mt-4 md:mx-0 md:mt-0 md:rounded-2xl overflow-hidden shadow-lg">

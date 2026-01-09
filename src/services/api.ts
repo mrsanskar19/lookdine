@@ -2,6 +2,44 @@ import { nearbyVenues, nearbyPeople } from '@/data/mockData';
 import { VenueData } from '@/components/venue/VenueCard';
 import { PersonData } from '@/components/social/PersonCard';
 
+const API_BASE_URL = 'https://foodslinkx-backend.vercel.app/api';
+
+const getAuthToken = () => {
+  return localStorage.getItem('jwt_token');
+};
+
+const api = {
+  async get<T>(endpoint: string): Promise<T> {
+    const token = getAuthToken();
+    const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch: ${response.statusText}`);
+    }
+    return response.json();
+  },
+
+  async post<T>(endpoint: string, data: any): Promise<T> {
+    const token = getAuthToken();
+    const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to post: ${response.statusText}`);
+    }
+    return response.json();
+  },
+};
+
+
 // Simulate API delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -66,3 +104,5 @@ export const signup = async (data: SignupData): Promise<User> => {
     avatar: "https://github.com/shadcn.png"
   };
 };
+
+export default api;
