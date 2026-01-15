@@ -757,7 +757,7 @@ in the Software without restriction...
 
 ### ⭐ Star this repository if you find it helpful!
 
-**Made with ❤️ by Aman Gupta**
+**Made with ❤️ by Lookdine **
 
 [Back to Top](#-lookdine---social-dining-experience-platform)
 
