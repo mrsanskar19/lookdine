@@ -750,14 +750,8 @@ in the Software without restriction...
 
 ## 📞 Support
 
-...
 
----
-=======
 
->>>>>>> 6d5d7b28d0faeb8de253a4d87fcbe1b6bc9f08be
-
-<div align="center">
 
 ### ⭐ Star this repository if you find it helpful!
 
