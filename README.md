@@ -760,3 +760,12 @@ in the Software without restriction...
 [Back to Top](#-lookdine---social-dining-experience-platform)
 
 </div>
+
+
+### ⭐ Star this repository if you find it helpful!
+
+**Made with ❤️ by Lookdine **
+
+[Back to Top](#-lookdine---social-dining-experience-platform)
+
+</div>
