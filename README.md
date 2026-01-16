@@ -745,13 +745,7 @@ in the Software without restriction...
 - **React Team** - For the incredible framework
 - **Open Source Community** - For the tools and inspiration
 
----
 
-## 📞 Support
-
-...
-
----
 
 <div align="center">
 
