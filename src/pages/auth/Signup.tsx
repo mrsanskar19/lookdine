@@ -1,525 +1,216 @@
+"use client";
+
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { signup, SignupData } from "@/services/api";
-import { useAuth } from "@/context/AuthContext";
-import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, ArrowRight, Check, User, Mail, Lock, Phone, MapPin, Calendar as CalendarIcon, Upload, X } from "lucide-react";
 import { format } from "date-fns";
+import { 
+  User, Mail, Lock, Phone, Calendar as CalendarIcon, 
+  Upload, ArrowLeft, ArrowRight, Check, Sparkles 
+} from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SignupData } from "@/services/types/auth";
 
-interface ExtendedSignupData extends SignupData {
-  phone?: string;
-  address?: string;
-  confirmPassword?: string;
-  dateOfBirth?: string;
-  username?: string;
-  avatar?: string;
-  interests?: string[];
-}
-
-interface ValidationError {
-  field: keyof ExtendedSignupData;
-  message: string;
-}
 
 export default function Signup() {
+  const { signup, isLoading } = useAuth();
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<ValidationError[]>([]);
-  const [formData, setFormData] = useState<ExtendedSignupData>({
+  const [formData, setFormData] = useState<SignupData>({
     name: "",
+    dob: "",
     email: "",
-    password: "",
-    confirmPassword: "",
     phone: "",
-    address: "",
-    dateOfBirth: "",
     username: "",
     avatar: "",
-    interests: []
+    interests: [],
+    password: ""
   });
-
-  const interestsOptions = [
-    "Dating", "Food", "Extrovert", "Travel", "Music", "Tech"
-  ];
 
   const totalSteps = 4;
   const progress = (step / totalSteps) * 100;
-  const navigate = useNavigate();
-  const { login } = useAuth();
-  const { toast } = useToast();
+  const interestsOptions = ["Dating", "Food", "Extrovert", "Travel", "Music", "Tech"];
 
-  // Load saved form data from localStorage
-  useEffect(() => {
-    const savedData = localStorage.getItem('signup_form_data');
-    if (savedData) {
-      try {
-        const parsed = JSON.parse(savedData);
-        setFormData(parsed);
-      } catch (e) {
-        console.error("Failed to parse saved form data", e);
-      }
-    }
-    
-    // Cleanup function
-    return () => {
-      try {
-        localStorage.removeItem('signup_form_data');
-      } catch (error) {
-        console.warn('Could not clear signup form data:', error);
-      }
-    };
-  }, []);
-
-  // Save form data to localStorage whenever it changes (but exclude large data like images)
-  useEffect(() => {
-    if (formData.name || formData.email || formData.password) {
-      // Create a version without the avatar to avoid quota issues
-      const dataToSave = {
-        ...formData,
-        avatar: undefined // Don't save base64 image to localStorage
-      };
-      try {
-        localStorage.setItem('signup_form_data', JSON.stringify(dataToSave));
-      } catch (error) {
-        console.warn('Could not save form data to localStorage:', error);
-        // Clear existing data if quota is exceeded
-        try {
-          localStorage.removeItem('signup_form_data');
-        } catch (clearError) {
-          console.warn('Could not clear localStorage:', clearError);
-        }
-      }
-    }
-  }, [formData]);
-
-  const validateStep = (currentStep: number): boolean => {
-    const newErrors: ValidationError[] = [];
-
-    switch (currentStep) {
-      case 1:
-        if (!formData.name || formData.name.trim().length < 2) {
-          newErrors.push({ field: 'name', message: 'Name must be at least 2 characters long' });
-        }
-        break;
-      case 2:
-        if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-          newErrors.push({ field: 'email', message: 'Please enter a valid email address' });
-        }
-        if (!formData.phone || !/^\+?[\d\s-()]+$/.test(formData.phone)) {
-          newErrors.push({ field: 'phone', message: 'Please enter a valid phone number' });
-        }
-        break;
-      case 3:
-        if (!formData.username || formData.username.trim().length < 3) {
-          newErrors.push({ field: 'username', message: 'Username must be at least 3 characters long' });
-        }
-        if (!formData.interests || formData.interests.length === 0) {
-          newErrors.push({ field: 'interests', message: 'Please select at least one interest' });
-        }
-        break;
-      case 4:
-        if (!formData.password || formData.password.length < 8) {
-          newErrors.push({ field: 'password', message: 'Password must be at least 8 characters long' });
-        }
-        if (!formData.confirmPassword || formData.password !== formData.confirmPassword) {
-          newErrors.push({ field: 'confirmPassword', message: 'Passwords do not match' });
-        }
-        break;
-    }
-
-    setErrors(newErrors);
-    return newErrors.length === 0;
+  const handleNext = () => {
+    if (step < totalSteps) setStep(step + 1);
   };
 
-  const handleInputChange = (field: keyof ExtendedSignupData) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-    
-    // Clear errors for this field when user starts typing
-    setErrors(prev => prev.filter(error => error.field !== field));
-  };
-
-  const handleNext = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!validateStep(step)) {
-      toast({
-        title: "Validation Error",
-        description: "Please fix the errors before continuing",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (step < totalSteps) {
-      setStep(step + 1);
-    } else {
-      await handleSubmit();
-    }
-  };
-
-  const handlePrevious = () => {
-    if (step > 1) {
-      setStep(step - 1);
-    }
-  };
-
-  const handleSubmit = async () => {
+  const handleFinalSubmit = async () => {
     try {
-      setLoading(true);
-      
-      const signupData: any = {
-        name: formData.name!,
-        email: formData.email!,
-        password: formData.password!,
-        phone: formData.phone,
-        dateOfBirth: formData.dateOfBirth,
-        username: formData.username,
-        avatar: formData.avatar,
-        interests: formData.interests
-      };
-
-      const response = await signup(signupData);
-      
-      // Clear saved form data
-      localStorage.removeItem('signup_form_data');
-      
-      toast({
-        title: "Success",
-        description: "Account created successfully!"
-      });
-      
-      // Auto-login after successful signup
-      if (response) {
-        navigate("/auth/login");
-      } else {
-        navigate("/");
-      }
-    } catch (error) {
-      console.error("Signup failed:", error);
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to create account. Please try again.",
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
+      await signup(formData);
+      // Success toast is handled by our Global API Interceptor
+    } catch (err) {
+      // Local error handling if needed
     }
   };
 
-  const getFieldError = (field: keyof ExtendedSignupData) => {
-    return errors.find(error => error.field === field)?.message;
-  };
-
-  const renderStepContent = () => {
-    switch (step) {
-      case 1:
-        return (
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2 mb-4">
-              <User className="h-5 w-5 text-primary" />
-              <h3 className="text-lg font-semibold">Personal Basics</h3>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name *</Label>
-              <Input
-                id="name"
-                placeholder="Enter your full name"
-                value={formData.name}
-                onChange={handleInputChange('name')}
-                className={getFieldError('name') ? 'border-red-500' : ''}
-              />
-              {getFieldError('name') && (
-                <p className="text-sm text-red-500">{getFieldError('name')}</p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="dateOfBirth">Date of Birth *</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !formData.dateOfBirth && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formData.dateOfBirth ? format(new Date(formData.dateOfBirth), "PPP") : "Pick a date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={formData.dateOfBirth ? new Date(formData.dateOfBirth) : undefined}
-                    onSelect={(date) => {
-                      if (date) {
-                        handleInputChange('dateOfBirth')({ target: { value: date.toISOString().split('T')[0] } });
-                      }
-                    }}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-              {getFieldError('dateOfBirth') && (
-                <p className="text-sm text-red-500">{getFieldError('dateOfBirth')}</p>
-              )}
-            </div>
-          </div>
-        );
-
-      case 2:
-        return (
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2 mb-4">
-              <Mail className="h-5 w-5 text-primary" />
-              <h3 className="text-lg font-semibold">Contact Details</h3>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email Address *</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                value={formData.email}
-                onChange={handleInputChange('email')}
-                className={getFieldError('email') ? 'border-red-500' : ''}
-              />
-              {getFieldError('email') && (
-                <p className="text-sm text-red-500">{getFieldError('email')}</p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number *</Label>
-              <Input
-                id="phone"
-                type="tel"
-                placeholder="+1 (555) 123-4567"
-                value={formData.phone}
-                onChange={handleInputChange('phone')}
-                className={getFieldError('phone') ? 'border-red-500' : ''}
-              />
-              {getFieldError('phone') && (
-                <p className="text-sm text-red-500">{getFieldError('phone')}</p>
-              )}
-            </div>
-          </div>
-        );
-
-      case 3:
-        return (
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2 mb-4">
-              <User className="h-5 w-5 text-primary" />
-              <h3 className="text-lg font-semibold">Account Identity</h3>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="username">Username *</Label>
-              <Input
-                id="username"
-                placeholder="Choose a username"
-                value={formData.username}
-                onChange={handleInputChange('username')}
-                className={getFieldError('username') ? 'border-red-500' : ''}
-              />
-              {getFieldError('username') && (
-                <p className="text-sm text-red-500">{getFieldError('username')}</p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label>Avatar (Optional)</Label>
-              <div className="flex items-center space-x-4">
-                <Avatar className="h-16 w-16">
-                  <AvatarImage src={formData.avatar} />
-                  <AvatarFallback>
-                    {formData.name ? formData.name.charAt(0).toUpperCase() : 'U'}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        // Check file size (max 2MB)
-                        const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB in bytes
-                        if (file.size > MAX_FILE_SIZE) {
-                          toast({
-                            title: "File Too Large",
-                            description: "Please select an image smaller than 2MB",
-                            variant: "destructive"
-                          });
-                          return;
-                        }
-                        
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                          handleInputChange('avatar')({ target: { value: reader.result as string } });
-                        };
-                        reader.readAsDataURL(file);
-                      }
-                    }}
-                    className="hidden"
-                    id="avatar-upload"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => document.getElementById('avatar-upload')?.click()}
-                    className="w-full"
-                  >
-                    <Upload className="h-4 w-4 mr-2" />
-                    Upload Photo
-                  </Button>
-                </div>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label>Interests</Label>
-              <div className="flex flex-wrap gap-2">
-                {interestsOptions.map((interest) => (
-                  <Badge
-                    key={interest}
-                    variant={formData.interests?.includes(interest) ? "default" : "outline"}
-                    className={getFieldError('interests') ? "border-red-500 cursor-pointer" : "cursor-pointer"}
-                    onClick={() => {
-                      const currentInterests = formData.interests || [];
-                      const newInterests = currentInterests.includes(interest)
-                        ? currentInterests.filter(i => i !== interest)
-                        : [...currentInterests, interest];
-                      handleInputChange('interests')({ target: { value: newInterests } });
-                    }}
-                  >
-                    {interest}
-                  </Badge>
-                ))}
-              </div>
-              {getFieldError('interests') && (
-                <p className="text-sm text-red-500">{getFieldError('interests')}</p>
-              )}
-            </div>
-          </div>
-        );
-
-      case 4:
-        return (
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2 mb-4">
-              <Lock className="h-5 w-5 text-primary" />
-              <h3 className="text-lg font-semibold">Security</h3>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password *</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Create a strong password"
-                value={formData.password}
-                onChange={handleInputChange('password')}
-                className={getFieldError('password') ? 'border-red-500' : ''}
-              />
-              {getFieldError('password') && (
-                <p className="text-sm text-red-500">{getFieldError('password')}</p>
-              )}
-              <p className="text-xs text-gray-500">Must be at least 8 characters long</p>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password *</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="Re-enter your password"
-                value={formData.confirmPassword}
-                onChange={handleInputChange('confirmPassword')}
-                className={getFieldError('confirmPassword') ? 'border-red-500' : ''}
-              />
-              {getFieldError('confirmPassword') && (
-                <p className="text-sm text-red-500">{getFieldError('confirmPassword')}</p>
-              )}
-            </div>
-          </div>
-        );
-
-      default:
-        return null;
-    }
+  const updateField = (field: keyof SignupData, value: any) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Create Account</CardTitle>
-          <CardDescription>
-            Step {step} of {totalSteps}: {step === 1 ? 'Personal Basics' : step === 2 ? 'Contact Details' : step === 3 ? 'Account Identity' : 'Security'}
-          </CardDescription>
-          <Progress value={progress} className="w-full mt-2" />
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleNext} className="space-y-6">
-            {renderStepContent()}
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+      {/* 🟢 Interactive Progress Header */}
+      <div className="w-full max-w-md mb-8 text-center space-y-4">
+        <h1 className="text-3xl font-black tracking-tighter">JOIN PLATFORM<span className="text-primary">.</span></h1>
+        <div className="space-y-2">
+          <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-muted-foreground">
+            <span>Step {step}</span>
+            <span>{Math.round(progress)}% Complete</span>
+          </div>
+          <Progress value={progress} className="h-1.5" />
+        </div>
+      </div>
+
+      <Card className="w-full max-w-md border-border bg-background/50 backdrop-blur-xl shadow-2xl overflow-hidden">
+        <CardContent className="p-8">
+          <div className="animate-in fade-in slide-in-from-right-4 duration-500">
             
-            <div className="flex justify-between space-x-2">
-              {step > 1 && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handlePrevious}
-                  disabled={loading}
-                  className="flex items-center space-x-2"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                  <span>Previous</span>
-                </Button>
-              )}
-              
-              <Button
-                type="submit"
-                disabled={loading}
-                className="flex items-center space-x-2 ml-auto"
-              >
-                {loading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    <span>Creating Account...</span>
-                  </>
-                ) : step === totalSteps ? (
-                  <>
-                    <Check className="h-4 w-4" />
-                    <span>Create Account</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Next</span>
-                    <ArrowRight className="h-4 w-4" />
-                  </>
-                )}
+            {/* STEP 1: Personal */}
+            {step === 1 && (
+              <div className="space-y-6">
+                <HeaderSection icon={<User size={20}/>} title="Personal Basics" />
+                <div className="space-y-4">
+                  <div className="grid gap-2">
+                    <Label className="font-bold">Full Name</Label>
+                    <Input 
+                      placeholder="John Doe" 
+                      value={formData.name}
+                      onChange={(e) => updateField("name", e.target.value)}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label className="font-bold">Date of Birth</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full justify-start font-normal rounded-xl">
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {formData.dob ? format(new Date(formData.dob), "PPP") : "Select date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0"><Calendar mode="single" onSelect={(d) => updateField("dob", d?.toISOString())} /></PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* STEP 2: Contact */}
+            {step === 2 && (
+              <div className="space-y-6">
+                <HeaderSection icon={<Mail size={20}/>} title="Contact Details" />
+                <div className="space-y-4">
+                  <div className="grid gap-2">
+                    <Label className="font-bold">Email Address</Label>
+                    <Input type="email" placeholder="john@example.com" value={formData.email} onChange={(e) => updateField("email", e.target.value)} />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label className="font-bold">Phone Number</Label>
+                    <Input type="tel" placeholder="+1 234 567 890" value={formData.phone} onChange={(e) => updateField("phone", e.target.value)} />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* STEP 3: Identity */}
+            {step === 3 && (
+              <div className="space-y-6">
+                <HeaderSection icon={<Sparkles size={20}/>} title="Account Identity" />
+                <div className="flex flex-col items-center gap-4 py-2">
+                  <Avatar className="h-24 w-24 border-4 border-primary/20">
+                    <AvatarImage src={formData.avatar} />
+                    <AvatarFallback className="text-2xl font-bold">{formData.name?.[0]}</AvatarFallback>
+                  </Avatar>
+                  <Input type="file" className="hidden" id="avatar-up" onChange={(e) => {
+                    const reader = new FileReader();
+                    reader.onload = () => updateField("avatar", reader.result);
+                    if(e.target.files?.[0]) reader.readAsDataURL(e.target.files[0]);
+                  }} />
+                  <Button variant="link" onClick={() => document.getElementById('avatar-up')?.click()}>Change Photo</Button>
+                </div>
+                <div className="grid gap-2">
+                  <Label className="font-bold">Username</Label>
+                  <Input placeholder="johndoe123" value={formData.username} onChange={(e) => updateField("username", e.target.value)} />
+                </div>
+              </div>
+            )}
+
+            {/* STEP 4: Interests & Password */}
+            {step === 4 && (
+              <div className="space-y-6">
+                <HeaderSection icon={<Lock size={20}/>} title="Final Touch" />
+                <div className="space-y-4">
+                  <div className="grid gap-2">
+                    <Label className="font-bold text-xs uppercase text-muted-foreground">Select Interests</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {interestsOptions.map(opt => (
+                        <Badge 
+                          key={opt}
+                          variant={formData.interests.includes(opt) ? "default" : "outline"}
+                          className="cursor-pointer px-3 py-1 text-sm rounded-full"
+                          onClick={() => {
+                            const exists = formData.interests.includes(opt);
+                            updateField("interests", exists ? formData.interests.filter(i => i !== opt) : [...formData.interests, opt]);
+                          }}
+                        >
+                          {opt}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label className="font-bold">Create Password</Label>
+                    <Input type="password" placeholder="••••••••" value={formData.password} onChange={(e) => updateField("password", e.target.value)} />
+                  </div>
+                </div>
+              </div>
+            )}
+
+          </div>
+
+          {/* Navigation Buttons */}
+          <div className="flex gap-4 mt-10">
+            {step > 1 && (
+              <Button variant="outline" className="flex-1 h-12 rounded-xl" onClick={() => setStep(step - 1)}>
+                <ArrowLeft className="mr-2 h-4 w-4" /> Back
               </Button>
-            </div>
-          </form>
-          
-          <div className="text-center text-sm mt-6">
-            Already have an account?{" "}
-            <Link to="/auth/login" className="text-primary hover:underline">
-              Login
-            </Link>
+            )}
+            <Button 
+              className="flex-[2] h-12 rounded-xl font-bold shadow-lg shadow-primary/20" 
+              onClick={step === totalSteps ? handleFinalSubmit : handleNext}
+              disabled={isLoading}
+            >
+              {step === totalSteps ? (
+                isLoading ? "Creating..." : "Complete Signup"
+              ) : (
+                <>Next Step <ArrowRight className="ml-2 h-4 w-4" /></>
+              )}
+            </Button>
           </div>
         </CardContent>
       </Card>
+
+      <p className="mt-8 text-sm text-muted-foreground">
+        Already have an account? <Link to="/login" className="text-primary font-bold hover:underline">Sign In</Link>
+      </p>
+    </div>
+  );
+}
+
+function HeaderSection({ icon, title }: { icon: any, title: string }) {
+  return (
+    <div className="flex items-center gap-3 pb-2 border-b border-border/50">
+      <div className="p-2 bg-primary/10 text-primary rounded-lg">{icon}</div>
+      <h3 className="text-xl font-bold tracking-tight">{title}</h3>
     </div>
   );
 }

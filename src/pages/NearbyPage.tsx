@@ -8,7 +8,7 @@ import { useAppMode } from '@/context/AppModeContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Users, Utensils, Coffee, MapPin } from 'lucide-react';
 import { MapComponent } from '@/components/map/MapComponent';
-import { fetchVenues, fetchPeople } from '@/services/api';
+
 import { VenueData } from '@/components/venue/VenueCard';
 import { PersonData } from '@/components/social/PersonCard';
 
@@ -24,8 +24,8 @@ const NearbyPage = () => {
     const loadData = async () => {
       try {
         const [venuesData, peopleData] = await Promise.all([
-          fetchVenues(),
-          fetchPeople()
+          fetch('https://randomuser.me/api/?results=10').then((res) => res.json()),
+          fetch('https://randomuser.me/api/?results=10').then((res) => res.json()),
         ]);
         setVenues(venuesData);
         setPeople(peopleData);
@@ -45,7 +45,7 @@ const NearbyPage = () => {
 
   if (loading) {
     return (
-      <AppLayout showSearch title="Nearby">
+      <AppLayout title="Nearby">
         <div className="flex h-[50vh] items-center justify-center">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
         </div>
@@ -54,7 +54,7 @@ const NearbyPage = () => {
   }
 
   return (
-    <AppLayout showSearch title="Nearby">
+    <AppLayout  title="Nearby">
       <div className="space-y-4">
         {/* Map Section */}
         <MapComponent venues={venues} people={!isTeenMode ? people : []} />

@@ -14,7 +14,7 @@ import BookingPage from "./pages/BookingPage";
 import DecorationPage from "./pages/DecorationPage";
 import ChatPage from "./pages/ChatPage";
 import ProfilePage from "./pages/ProfilePage";
-import StoryPage from "./pages/StoryPage";
+// import StoryPage from "./pages/StoryPage";
 import SearchPage from "./pages/SearchPage";
 import NotFound from "./pages/NotFound";
 
@@ -44,6 +44,7 @@ import CreateStory from "./pages/social/CreateStory";
 import NotificationsPage from "./pages/NotificationsPage";
 import MyFavorites from "./pages/settings/MyFavorites";
 import MyBookings from "./pages/settings/MyBookings";
+import PublicProfile from "./pages/profile/PublicProfile";
 
 const queryClient = new QueryClient();
 
@@ -73,7 +74,6 @@ const App = () => (
                 <ProfilePage />
               </ProtectedRoute>
             } />
-            <Route path="/stories/:id" element={<StoryPage />} />
 
             {/* Auth Routes */}
             <Route path="/login" element={<Login />} />
@@ -84,7 +84,7 @@ const App = () => (
             <Route path="/auth/set-password" element={<SetPassword />} />
 
             {/* Profile & Settings */}
-            <Route path="/user/:id" element={<PublicUserProfile />} />
+            <Route path="/user/:id" element={<PublicProfile />} />
             <Route path="/hotel/:id" element={<HotelProfile />} />
             <Route path="/profile/edit" element={<ProfileEdit />} />
             <Route path="/settings" element={<SettingsPage />} />

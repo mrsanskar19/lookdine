@@ -8,12 +8,14 @@ interface AppLayoutProps {
   children: ReactNode;
   title?: string;
   showHeader?: boolean;
+  className?:string;
 }
 
 export function AppLayout({ 
   children, 
   title, 
   showHeader = true, 
+  className=""
 }: AppLayoutProps) {
   return (
     <div className="flex min-h-screen bg-background text-foreground">
@@ -31,11 +33,9 @@ export function AppLayout({
           "flex-1 w-full mx-auto transition-all duration-300",
           /* Mobile: Add padding-bottom so content isn't hidden by BottomNav */
           "pb-20 md:pb-0",
-          /* Desktop: Add standard spacing */
-          "md:p-6 lg:p-8"
         )}>
           {/* Inner Container: Constrains width for better readability on large screens */}
-          <div className="max-w-7xl mx-auto h-full">
+          <div className={`max-w-7xl mx-auto h-full md:p-6 lg:p-8  ${className}`}>
             {children}
           </div>
         </main>

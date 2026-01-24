@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useDebounce } from '@/hooks/use-debounce';
-import { searchHotels } from '@/services/api';
+import { search } from '@/services/api/search';
+import { User } from '@/services/types/auth';
+import { Hotel } from '@/services/types/hotels';
+// import { searchHotels } from '@/services/api/api';
 
 interface SearchParams {
   query: string;
@@ -11,17 +14,8 @@ interface SearchParams {
 }
 
 interface SearchResult {
-  id: string;
-  name: string;
-  category: string;
-  rating: number;
-  reviews: number;
-  distance: string;
-  waitTime: string;
-  price: string;
-  tags: string[];
-  image?: string;
-  description?: string;
+  users:User[],
+  hotels:Hotel[]
 }
 
 export const useSearch = () => {
@@ -29,7 +23,10 @@ export const useSearch = () => {
     query: '',
     category: 'all',
   });
-  const [results, setResults] = useState<SearchResult[]>([]);
+  const [results, setResults] = useState<SearchResult>({
+    users:[],
+    hotels:[]
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,7 +35,10 @@ export const useSearch = () => {
 
   const performSearch = useCallback(async () => {
     if (!debouncedQuery.trim()) {
-      setResults([]);
+      setResults({
+        users:[],
+        hotels:[]
+      });
       return;
     }
 
@@ -46,18 +46,17 @@ export const useSearch = () => {
     setError(null);
 
     try {
-      const response = await searchHotels({
-        query: debouncedQuery,
-        category: searchParams.category,
-        price: searchParams.price,
-        rating: searchParams.rating,
-        location: searchParams.location,
+      const data = await search.get(debouncedQuery) as unknown as SearchResult;
+      setResults(data || {
+        users:[],
+        hotels:[]
       });
-      
-      setResults(response.data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Search failed');
-      setResults([]);
+      setResults({
+        users:[],
+        hotels:[]
+      });
     } finally {
       setLoading(false);
     }

@@ -1,223 +1,151 @@
-import { useState, useEffect } from 'react';
+"use client";
+
+import { useState, useRef } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import { chatConversations } from '@/data/mockData';
-import { Search, Check, CheckCheck, Store, Trash2, XCircle, Image as ImageIcon, AlertTriangle, MoreVertical } from 'lucide-react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { 
+  Send, Paperclip, MoreVertical, ChevronLeft, 
+  Trash2, Eraser, Info, Edit3, Reply, CheckCheck 
+} from 'lucide-react';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
-import { fetchChatStatus, clearChat, deleteChat } from '@/services/api';
+import { cn } from '@/lib/utils';
 
 const ChatPage = () => {
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
   const [message, setMessage] = useState('');
-  // Local state for cleared/deleted chats demo
-  const [clearedChats, setClearedChats] = useState<string[]>([]);
-  const [deletedChats, setDeletedChats] = useState<string[]>([]);
-
-  useEffect(() => {
-    const loadChatStatus = async () => {
-      try {
-        const { cleared, deleted } = await fetchChatStatus();
-        setClearedChats(cleared);
-        setDeletedChats(deleted);
-      } catch (error) {
-        console.error('Failed to load chat status', error);
-        toast.error('Failed to load chat status');
-      }
-    };
-    loadChatStatus();
-  }, []);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const selectedConversation = chatConversations.find((c) => c.id === selectedChat);
 
-  const handleClearChat = async () => {
-    if (selectedChat) {
-      try {
-        await clearChat(selectedChat);
-        setClearedChats([...clearedChats, selectedChat]);
-        toast.success("Chat cleared");
-      } catch (error) {
-        console.error('Failed to clear chat', error);
-        toast.error('Failed to clear chat');
-      }
-    }
-  };
+  // --- UI Components ---
 
-  const handleDeleteChat = async () => {
-    if (selectedChat) {
-      try {
-        await deleteChat(selectedChat);
-        setDeletedChats([...deletedChats, selectedChat]);
-        setSelectedChat(null);
-        toast.success("Chat deleted");
-      } catch (error) {
-        console.error('Failed to delete chat', error);
-        toast.error('Failed to delete chat');
-      }
-    }
-  };
+  const MessageBubble = ({ text, isSender, time }: { text: string, isSender: boolean, time: string }) => (
+    <div className={cn("flex flex-col mb-4 group", isSender ? "items-end" : "items-start")}>
+      <div className="relative flex items-center gap-2 max-w-[85%]">
+        {/* Hover Actions */}
+        <div className={cn(
+          "absolute top-0 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1 bg-background/80 backdrop-blur shadow-sm border rounded-full p-1 z-10",
+          isSender ? "-left-16" : "-right-16"
+        )}>
+          <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full" onClick={() => toast.info("Replying...")}>
+            <Reply size={12} />
+          </Button>
+          {isSender && (
+            <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full" onClick={() => toast.info("Edit mode active")}>
+              <Edit3 size={12} />
+            </Button>
+          )}
+        </div>
 
-  const handleSendPhoto = () => {
-      toast.info("Opening gallery...");
-  };
+        <div className={cn(
+          "p-3 rounded-2xl text-sm font-medium shadow-sm transition-all active:scale-[0.99]",
+          isSender 
+            ? "bg-primary text-primary-foreground rounded-br-none" 
+            : "bg-muted text-foreground rounded-bl-none"
+        )}>
+          {text}
+        </div>
+      </div>
+      <div className="flex items-center gap-1 mt-1 px-1">
+        <span className="text-[10px] text-muted-foreground uppercase">{time}</span>
+        {isSender && <CheckCheck size={12} className="text-primary" />}
+      </div>
+    </div>
+  );
 
-  // Chat list view
   if (!selectedChat) {
     return (
       <AppLayout title="Messages">
-        <div className="space-y-4">
-          <div className="bg-yellow-100 dark:bg-yellow-900/30 p-3 rounded-lg flex items-center gap-2 text-sm text-yellow-800 dark:text-yellow-200">
-             <AlertTriangle className="h-4 w-4 shrink-0" />
-             Chat will be Remove after 12AM everyday except 6 chats
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-3 p-4 bg-primary/5 border border-primary/10 rounded-2xl text-[12px] font-bold text-primary">
+            <Info size={16} />
+            <span>History clears at 12 AM (except 6 pinned chats)</span>
           </div>
-
-          {/* Search */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Search conversations..."
-              className="h-11 rounded-xl border-0 bg-muted pl-10"
-            />
-          </div>
-
-          {/* Filter Tabs */}
-          <div className="flex gap-2">
-            <Badge variant="default" className="cursor-pointer px-3 py-1.5">All</Badge>
-            <Badge variant="secondary" className="cursor-pointer px-3 py-1.5">People</Badge>
-            <Badge variant="secondary" className="cursor-pointer px-3 py-1.5">Venues</Badge>
-          </div>
-
-          {/* Conversations */}
-          <div className="space-y-2">
-            {chatConversations.filter(c => !deletedChats.includes(c.id)).map((chat) => (
-              <Card
-                key={chat.id}
-                className="flex items-center gap-3 p-3 cursor-pointer hover:shadow-soft transition-all"
-                onClick={() => setSelectedChat(chat.id)}
-              >
-                <div className="relative">
-                  <img
-                    src={chat.avatar}
-                    alt={chat.name}
-                    className="h-12 w-12 rounded-full object-cover"
-                  />
-                  {chat.isVenue && (
-                    <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                      <Store className="h-3 w-3" />
-                    </div>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-medium truncate">{chat.name}</h3>
-                    <span className="text-xs text-muted-foreground">{chat.time}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm text-muted-foreground truncate">{chat.lastMessage}</p>
-                    {chat.unread > 0 && (
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
-                        {chat.unread}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
+          {/* List mapping same as before... */}
+          {chatConversations.map(chat => (
+            <div key={chat.id} onClick={() => setSelectedChat(chat.id)} className="flex items-center gap-4 p-4 rounded-2xl hover:bg-muted/50 cursor-pointer active:scale-95 transition-all">
+               <img src={chat.avatar} className="h-12 w-12 rounded-full object-cover" alt="" />
+               <div className="flex-1">
+                  <div className="flex justify-between"><span className="font-bold text-sm">{chat.name}</span><span className="text-[10px] opacity-60">{chat.time}</span></div>
+                  <p className="text-xs text-muted-foreground truncate">{chat.lastMessage}</p>
+               </div>
+            </div>
+          ))}
         </div>
       </AppLayout>
     );
   }
 
-  // Individual chat view
   return (
-    <AppLayout showHeader={false}>
-      {/* Chat Header */}
-      <div className="sticky -top-4 -mx-4 mb-4 flex items-center gap-3 border-b border-border bg-card/95 backdrop-blur-lg p-4 z-10">
-        <Button variant="ghost" size="iconSm" onClick={() => setSelectedChat(null)}>
-          ←
-        </Button>
-        <img
-          src={selectedConversation?.avatar}
-          alt={selectedConversation?.name}
-          className="h-10 w-10 rounded-full object-cover"
-        />
-        <div className="flex-1">
-          <h3 className="font-medium">{selectedConversation?.name}</h3>
-          <p className="text-xs text-muted-foreground">Online</p>
-        </div>
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="iconSm">
-                    <MoreVertical className="h-5 w-5" />
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-                <DropdownMenuItem className="text-destructive" onClick={handleDeleteChat}>
-                    <Trash2 className="mr-2 h-4 w-4" /> Delete Chat
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleClearChat}>
-                    <XCircle className="mr-2 h-4 w-4" /> Clear Chat
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      {/* Messages */}
-      <div className="flex-1 space-y-4 pb-20">
-        {!clearedChats.includes(selectedChat!) ? (
-            <>
-                {/* Sample messages */}
-                <div className="flex justify-start">
-                <div className="max-w-[75%] rounded-2xl rounded-bl-sm bg-muted px-4 py-2">
-                    <p className="text-sm">Hey! How's it going? 👋</p>
-                    <span className="text-[10px] text-muted-foreground">2:30 PM</span>
-                </div>
-                </div>
-
-                <div className="flex justify-end">
-                <div className="max-w-[75%] rounded-2xl rounded-br-sm bg-primary px-4 py-2 text-primary-foreground">
-                    <p className="text-sm">Hi! I'm good, thanks! Just browsing some cafes nearby.</p>
-                    <div className="flex items-center justify-end gap-1">
-                    <span className="text-[10px] opacity-80">2:32 PM</span>
-                    <CheckCheck className="h-3 w-3" />
-                    </div>
-                </div>
-                </div>
-
-                <div className="flex justify-start">
-                <div className="max-w-[75%] rounded-2xl rounded-bl-sm bg-muted px-4 py-2">
-                    <p className="text-sm">{selectedConversation?.lastMessage}</p>
-                    <span className="text-[10px] text-muted-foreground">Just now</span>
-                </div>
-                </div>
-            </>
-        ) : (
-            <div className="flex h-full items-center justify-center text-muted-foreground text-sm">
-                Chat cleared
+    <AppLayout 
+      showHeader={false} 
+      className="!p-0 !overflow-hidden max-h-screen h-screen "
+    >
+      {/* 🟢 Header with Negative Margin to fit AppLayout perfectly */}
+      <div className="flex flex-col h-screen  overflow-hidden">
+        <header className="flex items-center gap-3 p-4 border-b bg-background/95 backdrop-blur-md z-20">
+          <Button variant="ghost" size="icon" onClick={() => setSelectedChat(null)} className="rounded-full">
+            <ChevronLeft size={24} />
+          </Button>
+          <div className="flex flex-1 items-center gap-3">
+            <div className="relative">
+              <img src={selectedConversation?.avatar} className="h-10 w-10 rounded-full object-cover" alt="" />
+              <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-background rounded-full" />
             </div>
-        )}
-      </div>
+            <div>
+              <h3 className="font-bold text-sm leading-none">{selectedConversation?.name}</h3>
+              <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Online</span>
+            </div>
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="rounded-full"><MoreVertical size={20} /></Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="rounded-xl">
+              <DropdownMenuItem onClick={() => toast.info("History cleared")}><Eraser className="mr-2 h-4 w-4" /> Clear Chat</DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive" onClick={() => setSelectedChat(null)}><Trash2 className="mr-2 h-4 w-4" /> Delete Chat</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </header>
 
-      {/* Message Input */}
-      <div className="fixed bottom-24 left-4 right-4 max-w-md mx-auto">
-        <div className="flex items-center gap-2 rounded-2xl bg-card border border-border p-2 shadow-soft">
-          <Button variant="ghost" size="iconSm" onClick={handleSendPhoto}>
-             <ImageIcon className="h-5 w-5 text-muted-foreground" />
-          </Button>
-          <Input
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Type a message..."
-            className="flex-1 border-0 bg-transparent focus-visible:ring-0"
-          />
-          <Button variant="hero" size="icon" disabled={!message.trim()}>
-            →
-          </Button>
-        </div>
+        {/* 🔵 Scrollable Chat Area */}
+        <main className="flex-1 p-4 overflow-y-auto bg-muted/10">
+          <MessageBubble text="Hey! Can I get more details about the venue?" isSender={false} time="2:10 PM" />
+          <MessageBubble text="Sure! We have a rooftop area available for the date you selected." isSender={true} time="2:12 PM" />
+          <MessageBubble text="Awesome, checking reviews now." isSender={false} time="2:15 PM" />
+        </main>
+
+        {/* 🟡 Floating Input Area */}
+        <footer className="p-4 bg-background border-t">
+          <div className="flex items-center gap-2 bg-muted/50 border border-border p-1.5 rounded-full shadow-sm focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+            <input type="file" ref={fileInputRef} className="hidden" onChange={() => toast.success("File attached")} />
+            <Button variant="ghost" size="icon" className="rounded-full shrink-0" onClick={() => fileInputRef.current?.click()}>
+              <Paperclip size={20} className="text-muted-foreground" />
+            </Button>
+            
+            <input
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Type a message..."
+              className="flex-1 bg-transparent border-none text-sm outline-none px-2 min-w-0"
+              onKeyDown={(e) => e.key === 'Enter' && message.trim() && toast.success("Sent!")}
+            />
+            
+            <Button 
+              disabled={!message.trim()}
+              className="rounded-full h-10 w-10 p-0 bg-primary text-white shadow-lg active:scale-90 transition-transform shrink-0"
+            >
+              <Send size={18} />
+            </Button>
+          </div>
+        </footer>
       </div>
     </AppLayout>
   );

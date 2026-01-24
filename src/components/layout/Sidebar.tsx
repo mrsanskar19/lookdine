@@ -100,16 +100,19 @@ export function Sidebar({ title }: SidebarProps) {
           <div className="flex items-center gap-3 px-3 py-2">
             <Avatar className="h-8 w-8">
               <AvatarImage src={user.avatar} alt={user.name} />
-              <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+              <AvatarFallback>{user?.name?.[0]}</AvatarFallback>
             </Avatar>
-            <div className="flex-1 min-w-0">
-              <span className="text-sm font-semibold truncate">{user.name}</span>
-              <span className="text-xs text-muted-foreground truncate">{user.email}</span>
-            </div>
+            <div className="flex flex-col min-w-0">
+  <span className="text-sm font-bold tracking-tight text-foreground truncate leading-none mb-1">
+    {user.name}
+  </span>
+  <span className="text-[12px] font-medium text-muted-foreground truncate opacity-80">
+    {user.email}
+  </span>
+</div>
           </div>
         )}
-        
-        <Button 
+        {isAuthenticated ? (<Button 
           variant="ghost" 
           className={cn(
             "w-full mt-2 text-muted-foreground justify-start gap-3", 
@@ -119,7 +122,19 @@ export function Sidebar({ title }: SidebarProps) {
         >
           <LogOut className="h-5 w-5 shrink-0" />
           {!isCollapsed && <span>Log Out</span>}
-        </Button>
+        </Button>) : ( <Button 
+          variant="default" 
+          className={cn(
+            "w-full mt-2 justify-start gap-3", 
+            isCollapsed && "px-0 justify-center"
+          )}
+          onClick={handleLogout}
+        >
+          <User className="h-5 w-5 shrink-0" />
+          {!isCollapsed && <span>Login Now</span>}
+        </Button>)
+        }
+        
       </div>
     </aside>
   );

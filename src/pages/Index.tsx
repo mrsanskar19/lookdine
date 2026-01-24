@@ -7,13 +7,15 @@ import { ChevronRight, Sparkles, Users, MapPin, Utensils, User, LogOut } from 'l
 import { useAppMode } from '@/context/AppModeContext';
 import { useAuth } from '@/context/AuthContext';
 import { Link } from 'react-router-dom';
+import { Stories } from '@/components/social/Stories';
 
 const Index = () => {
   const { isTeenMode } = useAppMode();
   const { user, isAuthenticated, logout } = useAuth();
 
   return (
-    <AppLayout title="Home" showHeader={true}>
+    <AppLayout title="Home" className='px-4' showHeader={true}>
+      <Stories/>
       <div className="space-y-6 md:space-y-8">
         {/* Hero Section */}
         <div className="relative -mx-4 -mt-4 md:mx-0 md:mt-0 md:rounded-2xl overflow-hidden shadow-lg">
@@ -72,42 +74,6 @@ const Index = () => {
               </>
             )}
           </div>
-        </div>
-
-        {/* Quick Stats */}
-        <div className="grid grid-cols-3 gap-3 md:gap-6">
-          {(isAuthenticated ? [
-          // User Account Card
-          {
-            icon: User,
-            label: 'My Account',
-            value: 'Profile & Settings'
-          },
-          // Quick Actions
-          {
-            icon: MapPin,
-            label: 'Bookings',
-            value: 'Manage Reservations'
-          },
-          {
-            icon: Utensils,
-            label: 'Favorites',
-            value: 'Saved Places'
-          }
-        ] : [
-          { icon: Utensils, label: 'Restaurants', value: '150+' },
-          { icon: Users, label: 'People Nearby', value: '48' },
-          { icon: Sparkles, label: 'Events Today', value: '12' }
-        ]).map((stat) => (
-            <div
-              key={stat.label}
-              className="flex flex-col items-center rounded-xl bg-card p-3 shadow-soft hover:shadow-lg transition-all"
-            >
-              <stat.icon className="h-5 w-5 md:h-8 md:w-8 text-primary mb-1 md:mb-2" />
-              <span className="text-lg md:text-2xl font-bold">{stat.value}</span>
-              <span className="text-[10px] md:text-sm text-muted-foreground">{stat.label}</span>
-            </div>
-          ))}
         </div>
 
         <div className="md:grid md:grid-cols-12 md:gap-8">

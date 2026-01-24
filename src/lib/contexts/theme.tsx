@@ -1,30 +1,63 @@
+"use client";
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'light' | 'dark' | "system";
+type Theme = 'light' | 'dark' | 'system';
 
-const ThemeContext = createContext<{ theme: Theme; toggleTheme: () => void } | undefined>(undefined);
+interface ThemeContextType {
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
+  toggleTheme: () => void;
+}
+
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
-    // Check local storage or system preference
     if (typeof window !== 'undefined') {
-      return (localStorage.getItem('theme') as Theme) || 
-             (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      return (localStorage.getItem('theme') as Theme) || 'system';
     }
-    return 'light';
+    return 'system';
   });
 
   useEffect(() => {
     const root = window.document.documentElement;
-    root.classList.remove('light', 'dark');
-    root.classList.add(theme);
+    
+    // 🟢 Master Logic for System Preference
+    const applyTheme = () => {
+      root.classList.remove('light', 'dark');
+      
+      if (theme === 'system') {
+        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        root.classList.add(systemTheme);
+      } else {
+        root.classList.add(theme);
+      }
+    };
+
+    applyTheme();
     localStorage.setItem('theme', theme);
+
+    // 🔵 Real-time Listener: Updates UI if OS theme changes
+    if (theme === 'system') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleChange = () => applyTheme();
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
   }, [theme]);
 
-  const toggleTheme = () => setTheme((prev) => (prev === 'light' ? 'dark' : 'system'));
+  // Cycle: Light -> Dark -> System
+  const toggleTheme = () => {
+    setTheme((prev) => {
+      if (prev === 'light') return 'dark';
+      if (prev === 'dark') return 'system';
+      return 'light';
+    });
+  };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
