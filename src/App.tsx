@@ -14,6 +14,13 @@ import BookingPage from "./pages/BookingPage";
 import DecorationPage from "./pages/DecorationPage";
 import ChatPage from "./pages/ChatPage";
 import ProfilePage from "./pages/ProfilePage";
+<<<<<<< HEAD
+=======
+import DashboardPage from "./pages/DashboardPage";
+import FriendsPage from "./pages/FriendsPage";
+import HotelDashboard from "./pages/HotelDashboard";
+import AboutPage from "./pages/AboutPage";
+>>>>>>> 094e5ef (Updated project code)
 // import StoryPage from "./pages/StoryPage";
 import SearchPage from "./pages/SearchPage";
 import NotFound from "./pages/NotFound";
@@ -58,6 +65,10 @@ const App = () => (
           <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <Routes>
             <Route path="/" element={<Index />} />
+<<<<<<< HEAD
+=======
+            <Route path="/about" element={<AboutPage />} />
+>>>>>>> 094e5ef (Updated project code)
             <Route path="/search" element={<SearchPage />} />
             <Route path="/nearby" element={<NearbyPage />} />
             <Route path="/restaurant/:id" element={<RestaurantDetailPage />} />
@@ -69,11 +80,32 @@ const App = () => (
                 <ChatPage />
               </ProtectedRoute>
             } />
+<<<<<<< HEAD
+=======
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            } />
+>>>>>>> 094e5ef (Updated project code)
             <Route path="/profile" element={
               <ProtectedRoute>
                 <ProfilePage />
               </ProtectedRoute>
             } />
+<<<<<<< HEAD
+=======
+            <Route path="/friends" element={
+              <ProtectedRoute>
+                <FriendsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/hotel-dashboard" element={
+              <ProtectedRoute>
+                <HotelDashboard />
+              </ProtectedRoute>
+            } />
+>>>>>>> 094e5ef (Updated project code)
 
             {/* Auth Routes */}
             <Route path="/login" element={<Login />} />

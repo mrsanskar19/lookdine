@@ -1,5 +1,9 @@
 import { useState } from 'react';
+<<<<<<< HEAD
 import { Home, MapPin, Calendar, MessageCircle, User, LogOut, ChevronLeft, ChevronRight, Search } from 'lucide-react';
+=======
+import { Home, MapPin, Calendar, MessageCircle, User, LogOut, ChevronLeft, ChevronRight, Search, BarChart3, Users } from 'lucide-react';
+>>>>>>> 094e5ef (Updated project code)
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -30,8 +34,15 @@ export function Sidebar({ title }: SidebarProps) {
   const navItems = [
     { icon: Home, label: 'Home', path: '/' },
     { icon: Search, label: 'Search', path: '/search' },
+<<<<<<< HEAD
     { icon: MapPin, label: 'Nearby', path: '/nearby' },
     { icon: Calendar, label: 'Book', path: '/book' },
+=======
+    { icon: MapPin, label: 'Explore', path: '/nearby' },
+    { icon: Calendar, label: 'Book', path: '/book' },
+    { icon: BarChart3, label: 'Dashboard', path: '/dashboard' },
+    { icon: Users, label: 'Friends', path: '/friends' },
+>>>>>>> 094e5ef (Updated project code)
     { icon: MessageCircle, label: 'Chat', path: '/chat' },
     { icon: User, label: 'Profile', path: '/profile' },
   ];

@@ -9,11 +9,24 @@ import { api } from "./api";
 export const authService = {
   
   login: async (credentials: LoginCredentials) => {
+<<<<<<< HEAD
     const res = await api.post<{ data: any; token: string }>('/auth/login', credentials,true);
     if (res?.data?.token) {
       setAuthToken(res?.data?.token)
     }
     return res?.data;
+=======
+    try {
+      const res = await api.post<{ data: any; token: string; user: any }>('/auth/login', credentials, true);
+      if (res?.data?.token) {
+        setAuthToken(res?.data?.token);
+      }
+      return res?.data;
+    } catch (error) {
+      console.error('Auth service login error:', error);
+      throw error;
+    }
+>>>>>>> 094e5ef (Updated project code)
   },
 
   me:async ()=>{

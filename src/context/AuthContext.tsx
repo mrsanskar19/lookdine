@@ -27,6 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   
 
   useEffect(() => {
+<<<<<<< HEAD
     const storedToken = getAuthToken();
     const storedUser = getAuthUser();
 
@@ -48,6 +49,57 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // router.push("/dashboard");
     }
     setIsLoading(false)
+=======
+    const initializeAuth = async () => {
+      const storedToken = getAuthToken();
+      const storedUser = getAuthUser();
+
+      if (storedToken && storedUser) {
+        try {
+          // Validate token with backend
+          const res = await authService.me();
+          if (res?.data) {
+            setToken(storedToken);
+            setUser(res.data);
+            setAuthUser(res.data);
+          } else {
+            // Token invalid, clear auth
+            clearAuth();
+            setToken(null);
+            setUser(null);
+          }
+        } catch (error) {
+          console.error('Token validation failed:', error);
+          clearAuth();
+          setToken(null);
+          setUser(null);
+        }
+      }
+      setIsLoading(false);
+    };
+
+    initializeAuth();
+  }, []);
+
+  const login = async (credentials: LoginCredentials) => {
+    setIsLoading(true);
+    try {
+      const res = await authService.login(credentials);
+      if (res && res.token) {
+        const apiToken = res.token;
+        const userData = res.user || res.data?.user;
+        
+        setToken(apiToken);
+        setUser(userData);
+        setAuthUser(userData);
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+>>>>>>> 094e5ef (Updated project code)
   };
 
   const signup = async (data: SignupData) => {

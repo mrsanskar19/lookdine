@@ -6,7 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAppMode } from '@/context/AppModeContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+<<<<<<< HEAD
 import { Users, Utensils, Coffee, MapPin } from 'lucide-react';
+=======
+import { Users, Utensils, Coffee, MapPin, List, Map } from 'lucide-react';
+>>>>>>> 094e5ef (Updated project code)
 import { MapComponent } from '@/components/map/MapComponent';
 
 import { VenueData } from '@/components/venue/VenueCard';
@@ -15,6 +19,10 @@ import { PersonData } from '@/components/social/PersonCard';
 const NearbyPage = () => {
   const { isTeenMode } = useAppMode();
   const [activeTab, setActiveTab] = useState('all');
+<<<<<<< HEAD
+=======
+  const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
+>>>>>>> 094e5ef (Updated project code)
   const [connectionFilter, setConnectionFilter] = useState<'all' | 'dating' | 'friendship'>('all');
   const [venues, setVenues] = useState<VenueData[]>([]);
   const [people, setPeople] = useState<PersonData[]>([]);
@@ -23,6 +31,7 @@ const NearbyPage = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
+<<<<<<< HEAD
         const [venuesData, peopleData] = await Promise.all([
           fetch('https://randomuser.me/api/?results=10').then((res) => res.json()),
           fetch('https://randomuser.me/api/?results=10').then((res) => res.json()),
@@ -31,6 +40,67 @@ const NearbyPage = () => {
         setPeople(peopleData);
       } catch (error) {
         console.error("Failed to fetch data", error);
+=======
+        // Mock venue data
+        const mockVenues = [
+          {
+            id: '1',
+            name: 'The Garden Cafe',
+            cuisine: 'Coffee & Breakfast',
+            rating: 4.5,
+            distance: '0.5 km',
+            priceLevel: '$$',
+            crowdStatus: 'chill' as const,
+            image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400',
+            peopleNow: 12,
+            coordinates: { lat: 40.7128, lng: -74.0060 }
+          },
+          {
+            id: '2',
+            name: 'Sushi Master',
+            cuisine: 'Japanese',
+            rating: 4.8,
+            distance: '1.2 km',
+            priceLevel: '$$$',
+            crowdStatus: 'busy' as const,
+            image: 'https://images.unsplash.com/photo-1579584425555-c3ce17fdcd35?w=400',
+            peopleNow: 28,
+            coordinates: { lat: 40.7580, lng: -73.9855 }
+          }
+        ];
+
+        // Mock people data
+        const mockPeople = [
+          {
+            id: '1',
+            name: 'Sarah Chen',
+            age: 28,
+            distance: '0.8 km',
+            interests: ['Coffee', 'Books', 'Travel'],
+            avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100',
+            connectionType: 'friendship' as const,
+            coordinates: { lat: 40.7260, lng: -73.9897 }
+          },
+          {
+            id: '2',
+            name: 'Mike Johnson',
+            age: 32,
+            distance: '1.5 km',
+            interests: ['Music', 'Hiking', 'Photography'],
+            avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100',
+            connectionType: 'dating' as const,
+            coordinates: { lat: 40.7489, lng: -73.9680 }
+          }
+        ];
+
+        setVenues(mockVenues);
+        setPeople(mockPeople);
+      } catch (error) {
+        console.error("Failed to fetch data", error);
+        // Set empty arrays as fallback
+        setVenues([]);
+        setPeople([]);
+>>>>>>> 094e5ef (Updated project code)
       } finally {
         setLoading(false);
       }
@@ -45,7 +115,11 @@ const NearbyPage = () => {
 
   if (loading) {
     return (
+<<<<<<< HEAD
       <AppLayout title="Nearby">
+=======
+      <AppLayout title="Explore">
+>>>>>>> 094e5ef (Updated project code)
         <div className="flex h-[50vh] items-center justify-center">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
         </div>
@@ -54,10 +128,67 @@ const NearbyPage = () => {
   }
 
   return (
+<<<<<<< HEAD
     <AppLayout  title="Nearby">
       <div className="space-y-4">
         {/* Map Section */}
         <MapComponent venues={venues} people={!isTeenMode ? people : []} />
+=======
+    <AppLayout  title="Explore">
+      <div className="space-y-4">
+        {/* View Mode Toggle */}
+        <div className="flex items-center gap-2 rounded-xl bg-muted p-1">
+          <Button
+            variant={viewMode === 'map' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setViewMode('map')}
+            className="flex-1"
+          >
+            <Map className="h-4 w-4 mr-2" />
+            Map View
+          </Button>
+          <Button
+            variant={viewMode === 'list' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setViewMode('list')}
+            className="flex-1"
+          >
+            <List className="h-4 w-4 mr-2" />
+            List View
+          </Button>
+        </div>
+
+        {/* Map or List Section */}
+        {viewMode === 'map' ? (
+          <MapComponent venues={venues} people={!isTeenMode ? people : []} />
+        ) : (
+          <div className="space-y-4">
+            {/* Venue List */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Coffee className="h-5 w-5 text-primary" />
+                <h2 className="font-semibold">Cafés & Restaurants Nearby</h2>
+              </div>
+              <VenueList venues={venues} />
+            </div>
+
+            {/* People Section - Adults only */}
+            {!isTeenMode && (
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Users className="h-5 w-5 text-primary" />
+                  <h2 className="font-semibold">People Nearby</h2>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {people.slice(0, 4).map((person) => (
+                    <PersonCard key={person.id} person={person} />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+>>>>>>> 094e5ef (Updated project code)
 
         {/* Location indicator */}
         <div className="flex items-center gap-2 rounded-xl bg-primary/5 p-3">

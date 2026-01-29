@@ -4,7 +4,11 @@ import { cn } from '@/lib/utils';
 
 const navItems = [
   { icon: Home, label: 'Home', path: '/' },
+<<<<<<< HEAD
   { icon: MapPin, label: 'Nearby', path: '/nearby' },
+=======
+  { icon: MapPin, label: 'Explore', path: '/nearby' },
+>>>>>>> 094e5ef (Updated project code)
   { icon: Search, label: 'Search', path: '/search' },
   { icon: MessageSquare, label: 'Messages', path: '/chat' },
   { icon: User, label: 'Profile', path: '/profile' },
