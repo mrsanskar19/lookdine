@@ -1,5 +1,6 @@
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -24,6 +25,8 @@ export default function SettingsPage() {
                {/* Toggle theme logic here */}
              </div>
 =======
+=======
+>>>>>>> 0895931 (Initial project setup)
 import { useState } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -512,7 +515,10 @@ export default function SettingsPage() {
                 </div>
               </CardContent>
             </Card>
+<<<<<<< HEAD
 >>>>>>> 094e5ef (Updated project code)
+=======
+>>>>>>> 0895931 (Initial project setup)
           </TabsContent>
         </Tabs>
       </div>

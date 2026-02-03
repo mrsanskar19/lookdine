@@ -1,14 +1,19 @@
 "use client";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 import { useState, useEffect } from "react";
 >>>>>>> 094e5ef (Updated project code)
+=======
+import { useState, useEffect } from "react";
+>>>>>>> 0895931 (Initial project setup)
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 export interface Story {
@@ -31,6 +36,8 @@ export const stories: Story[] = [
 
 export function Stories() {
 =======
+=======
+>>>>>>> 0895931 (Initial project setup)
 import { storiesService, Story } from "@/services/api/stories";
 import { useToast } from "@/hooks/use-toast";
 
@@ -138,12 +145,16 @@ export function Stories() {
       </div>
     );
   }
+<<<<<<< HEAD
 
 >>>>>>> 094e5ef (Updated project code)
+=======
+>>>>>>> 0895931 (Initial project setup)
   return (
     <div className="w-full bg-background/80 backdrop-blur-md z-10 border-b border-border/50 py-4">
       <ScrollArea className="w-full whitespace-nowrap">
         <div className="flex w-max space-x-5 px-6">
+<<<<<<< HEAD
 <<<<<<< HEAD
           {stories.map((story) => (
             <Link
@@ -151,6 +162,8 @@ export function Stories() {
               to={story.isUser ? '/stories/create' : `/stories/view/${story.id}`}
               className="flex flex-col items-center gap-2 cursor-pointer group relative"
 =======
+=======
+>>>>>>> 0895931 (Initial project setup)
           {/* Create Story Button */}
           <div
             className="flex flex-col items-center gap-2 cursor-pointer group relative"
@@ -183,11 +196,15 @@ export function Stories() {
                   );
                 }
               }}
+<<<<<<< HEAD
 >>>>>>> 094e5ef (Updated project code)
+=======
+>>>>>>> 0895931 (Initial project setup)
             >
               {/* Ring Container */}
               <div className={cn(
                 "relative rounded-full p-[2.5px] transition-all duration-300 group-active:scale-90",
+<<<<<<< HEAD
 <<<<<<< HEAD
                 story.hasStory 
                   ? "bg-gradient-to-tr from-yellow-400 via-orange-500 to-red-500 shadow-md shadow-orange-500/20" 
@@ -205,6 +222,8 @@ export function Stories() {
                   </div>
                 )}
 =======
+=======
+>>>>>>> 0895931 (Initial project setup)
                 story.isViewed 
                   ? "bg-muted-foreground/20" 
                   : "bg-gradient-to-tr from-yellow-400 via-orange-500 to-red-500 shadow-md shadow-orange-500/20 animate-pulse"
@@ -213,12 +232,16 @@ export function Stories() {
                   <AvatarImage src={story.user.avatar} alt={story.user.name} className="object-cover" />
                   <AvatarFallback className="bg-secondary">{story.user.name[0]}</AvatarFallback>
                 </Avatar>
+<<<<<<< HEAD
 >>>>>>> 094e5ef (Updated project code)
+=======
+>>>>>>> 0895931 (Initial project setup)
               </div>
 
               {/* Name Label */}
               <span className={cn(
                 "text-[11px] font-bold tracking-tight transition-colors duration-200",
+<<<<<<< HEAD
 <<<<<<< HEAD
                 story.hasStory ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"
               )}>
@@ -228,6 +251,11 @@ export function Stories() {
               )}>
                 {story.user.username || story.user.name.split(' ')[0]}
 >>>>>>> 094e5ef (Updated project code)
+=======
+                story.isViewed ? "text-muted-foreground" : "text-foreground"
+              )}>
+                {story.user.username || story.user.name.split(' ')[0]}
+>>>>>>> 0895931 (Initial project setup)
               </span>
             </Link>
           ))}

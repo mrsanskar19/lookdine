@@ -7,10 +7,14 @@ import { Badge } from '@/components/ui/badge';
 import { useAppMode } from '@/context/AppModeContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Users, Utensils, Coffee, MapPin } from 'lucide-react';
 =======
 import { Users, Utensils, Coffee, MapPin, List, Map } from 'lucide-react';
 >>>>>>> 094e5ef (Updated project code)
+=======
+import { Users, Utensils, Coffee, MapPin, List, Map } from 'lucide-react';
+>>>>>>> 0895931 (Initial project setup)
 import { MapComponent } from '@/components/map/MapComponent';
 
 import { VenueData } from '@/components/venue/VenueCard';
@@ -20,9 +24,13 @@ const NearbyPage = () => {
   const { isTeenMode } = useAppMode();
   const [activeTab, setActiveTab] = useState('all');
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
 >>>>>>> 094e5ef (Updated project code)
+=======
+  const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
+>>>>>>> 0895931 (Initial project setup)
   const [connectionFilter, setConnectionFilter] = useState<'all' | 'dating' | 'friendship'>('all');
   const [venues, setVenues] = useState<VenueData[]>([]);
   const [people, setPeople] = useState<PersonData[]>([]);
@@ -31,6 +39,7 @@ const NearbyPage = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
+<<<<<<< HEAD
 <<<<<<< HEAD
         const [venuesData, peopleData] = await Promise.all([
           fetch('https://randomuser.me/api/?results=10').then((res) => res.json()),
@@ -41,6 +50,8 @@ const NearbyPage = () => {
       } catch (error) {
         console.error("Failed to fetch data", error);
 =======
+=======
+>>>>>>> 0895931 (Initial project setup)
         // Mock venue data
         const mockVenues = [
           {
@@ -95,12 +106,15 @@ const NearbyPage = () => {
 
         setVenues(mockVenues);
         setPeople(mockPeople);
+<<<<<<< HEAD
       } catch (error) {
         console.error("Failed to fetch data", error);
         // Set empty arrays as fallback
         setVenues([]);
         setPeople([]);
 >>>>>>> 094e5ef (Updated project code)
+=======
+>>>>>>> 0895931 (Initial project setup)
       } finally {
         setLoading(false);
       }
@@ -116,10 +130,14 @@ const NearbyPage = () => {
   if (loading) {
     return (
 <<<<<<< HEAD
+<<<<<<< HEAD
       <AppLayout title="Nearby">
 =======
       <AppLayout title="Explore">
 >>>>>>> 094e5ef (Updated project code)
+=======
+      <AppLayout title="Explore">
+>>>>>>> 0895931 (Initial project setup)
         <div className="flex h-[50vh] items-center justify-center">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
         </div>
@@ -129,12 +147,16 @@ const NearbyPage = () => {
 
   return (
 <<<<<<< HEAD
+<<<<<<< HEAD
     <AppLayout  title="Nearby">
       <div className="space-y-4">
         {/* Map Section */}
         <MapComponent venues={venues} people={!isTeenMode ? people : []} />
 =======
     <AppLayout  title="Explore">
+=======
+    <AppLayout title="Explore">
+>>>>>>> 0895931 (Initial project setup)
       <div className="space-y-4">
         {/* View Mode Toggle */}
         <div className="flex items-center gap-2 rounded-xl bg-muted p-1">
@@ -188,7 +210,10 @@ const NearbyPage = () => {
             )}
           </div>
         )}
+<<<<<<< HEAD
 >>>>>>> 094e5ef (Updated project code)
+=======
+>>>>>>> 0895931 (Initial project setup)
 
         {/* Location indicator */}
         <div className="flex items-center gap-2 rounded-xl bg-primary/5 p-3">
