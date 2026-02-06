@@ -27,32 +27,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   
 
   useEffect(() => {
-<<<<<<< HEAD
-<<<<<<< HEAD
-    const storedToken = getAuthToken();
-    const storedUser = getAuthUser();
-
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(storedUser);
-    }
-    setIsLoading(false);
-  }, []);
-
-  const login = async (credentials: LoginCredentials) => {
-    setIsLoading(true)
-    const res = await authService.login(credentials);
-    if (res) {
-      const apiToken = getAuthToken() || "";
-      setToken(apiToken);
-      setUser(res);
-      setAuthUser(res.user);
-      // router.push("/dashboard");
-    }
-    setIsLoading(false)
-=======
-=======
->>>>>>> 0895931 (Initial project setup)
     const initializeAuth = async () => {
       const storedToken = getAuthToken();
       const storedUser = getAuthUser();
@@ -102,10 +76,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-<<<<<<< HEAD
->>>>>>> 094e5ef (Updated project code)
-=======
->>>>>>> 0895931 (Initial project setup)
   };
 
   const signup = async (data: SignupData) => {

@@ -1,12 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { Link, useNavigate } from "react-router-dom";
-=======
 import { Link, useNavigate, useLocation } from "react-router-dom";
->>>>>>> 094e5ef (Updated project code)
-=======
-import { Link, useNavigate, useLocation } from "react-router-dom";
->>>>>>> 0895931 (Initial project setup)
 import { useAuth } from "@/context/AuthContext";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,14 +20,7 @@ export default function Login() {
   const { login, isLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
   const location = useLocation();
->>>>>>> 094e5ef (Updated project code)
-=======
-  const location = useLocation();
->>>>>>> 0895931 (Initial project setup)
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -51,15 +36,6 @@ export default function Login() {
       };
 
       await login(payload as any);
-<<<<<<< HEAD
-<<<<<<< HEAD
-      toast({ title: "Welcome back!", description: "Redirecting to your dashboard..." });
-      navigate("/");
-    } catch (error: any) {
-      toast({ variant: "destructive", title: "Login Failed", description: error.message });
-=======
-=======
->>>>>>> 0895931 (Initial project setup)
       toast({ title: "Welcome back!", description: "Login successful!" });
       
       // Redirect to intended page or dashboard
@@ -72,10 +48,6 @@ export default function Login() {
         title: "Login Failed", 
         description: error.message || "Invalid credentials. Please try again." 
       });
-<<<<<<< HEAD
->>>>>>> 094e5ef (Updated project code)
-=======
->>>>>>> 0895931 (Initial project setup)
     }
   };
 

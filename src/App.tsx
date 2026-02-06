@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppModeProvider } from "@/context/AppModeContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
@@ -14,20 +14,10 @@ import BookingPage from "./pages/BookingPage";
 import DecorationPage from "./pages/DecorationPage";
 import ChatPage from "./pages/ChatPage";
 import ProfilePage from "./pages/ProfilePage";
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 0895931 (Initial project setup)
 import DashboardPage from "./pages/DashboardPage";
 import FriendsPage from "./pages/FriendsPage";
 import HotelDashboard from "./pages/HotelDashboard";
 import AboutPage from "./pages/AboutPage";
-<<<<<<< HEAD
->>>>>>> 094e5ef (Updated project code)
-=======
->>>>>>> 0895931 (Initial project setup)
-// import StoryPage from "./pages/StoryPage";
 import SearchPage from "./pages/SearchPage";
 import NotFound from "./pages/NotFound";
 
@@ -38,10 +28,8 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import SetPassword from "./pages/auth/SetPassword";
 
 // Profile & Settings
-import UserProfile from "./pages/profile/UserProfile";
 import HotelProfile from "./pages/profile/HotelProfile";
 import ProfileEdit from "./pages/profile/ProfileEdit";
-import PublicUserProfile from "./pages/PublicUserProfile";
 import SettingsPage from "./pages/settings/SettingsPage";
 import DataPolicy from "./pages/policies/DataPolicy";
 import SecurityPolicy from "./pages/policies/SecurityPolicy";
@@ -49,7 +37,6 @@ import TermsAndConditions from "./pages/policies/TermsAndConditions";
 
 import PrivacyAndSafetySettings from "./pages/settings/PrivacyAndSafetySettings";
 import AppPreferenceSettings from "./pages/settings/AppPreferenceSettings";
-
 
 // Social
 import StoryView from "./pages/social/StoryView";
@@ -69,96 +56,86 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <Routes>
-            <Route path="/" element={<Index />} />
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-            <Route path="/about" element={<AboutPage />} />
->>>>>>> 094e5ef (Updated project code)
-=======
-            <Route path="/about" element={<AboutPage />} />
->>>>>>> 0895931 (Initial project setup)
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/nearby" element={<NearbyPage />} />
-            <Route path="/restaurant/:id" element={<RestaurantDetailPage />} />
-            <Route path="/hotel/:id" element={<HotelSingleView />} />
-            <Route path="/book" element={<BookingPage />} />
-            <Route path="/decorate" element={<DecorationPage />} />
-            <Route path="/chat" element={
-              <ProtectedRoute>
-                <ChatPage />
-              </ProtectedRoute>
-            } />
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 0895931 (Initial project setup)
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            } />
-<<<<<<< HEAD
->>>>>>> 094e5ef (Updated project code)
-=======
->>>>>>> 0895931 (Initial project setup)
-            <Route path="/profile" element={
-              <ProtectedRoute>
-                <ProfilePage />
-              </ProtectedRoute>
-            } />
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 0895931 (Initial project setup)
-            <Route path="/friends" element={
-              <ProtectedRoute>
-                <FriendsPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/hotel-dashboard" element={
-              <ProtectedRoute>
-                <HotelDashboard />
-              </ProtectedRoute>
-            } />
-<<<<<<< HEAD
->>>>>>> 094e5ef (Updated project code)
-=======
->>>>>>> 0895931 (Initial project setup)
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/search" element={<SearchPage />} />
+              <Route path="/nearby" element={<NearbyPage />} />
+              <Route path="/restaurant/:id" element={<RestaurantDetailPage />} />
+              <Route path="/hotel/:id" element={<HotelSingleView />} />
+              <Route path="/book" element={<BookingPage />} />
+              <Route path="/decorate" element={<DecorationPage />} />
+              <Route
+                path="/chat"
+                element={
+                  <ProtectedRoute>
+                    <ChatPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <DashboardPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/friends"
+                element={
+                  <ProtectedRoute>
+                    <FriendsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/hotel-dashboard"
+                element={
+                  <ProtectedRoute>
+                    <HotelDashboard />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Auth Routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/auth/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/auth/signup" element={<Signup />} />
-            <Route path="/auth/forgot-password" element={<ForgotPassword />} />
-            <Route path="/auth/set-password" element={<SetPassword />} />
+              {/* Auth Routes */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/auth/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/auth/signup" element={<Signup />} />
+              <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+              <Route path="/auth/set-password" element={<SetPassword />} />
 
-            {/* Profile & Settings */}
-            <Route path="/user/:id" element={<PublicProfile />} />
-            <Route path="/hotel/:id" element={<HotelProfile />} />
-            <Route path="/profile/edit" element={<ProfileEdit />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/policies/data" element={<DataPolicy />} />
-            <Route path="/policies/security" element={<SecurityPolicy />} />
-            <Route path="/policies/terms" element={<TermsAndConditions />} />
-            <Route path="/favorites" element={<MyFavorites />} />
-            <Route path="/bookings" element={<MyBookings />} />
-            <Route path="/addresses" element={<div>Addresses</div>} />
-            <Route path="/settings/privacy-safety" element={<PrivacyAndSafetySettings />} />
-            <Route path="/settings/app-preferences" element={<AppPreferenceSettings />} />
+              {/* Profile & Settings */}
+              <Route path="/user/:id" element={<PublicProfile />} />
+              <Route path="/hotel/:id" element={<HotelProfile />} />
+              <Route path="/profile/edit" element={<ProfileEdit />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/policies/data" element={<DataPolicy />} />
+              <Route path="/policies/security" element={<SecurityPolicy />} />
+              <Route path="/policies/terms" element={<TermsAndConditions />} />
+              <Route path="/favorites" element={<MyFavorites />} />
+              <Route path="/bookings" element={<MyBookings />} />
+              <Route path="/addresses" element={<div>Addresses</div>} />
+              <Route path="/settings/privacy-safety" element={<PrivacyAndSafetySettings />} />
+              <Route path="/settings/app-preferences" element={<AppPreferenceSettings />} />
 
-            {/* Social */}
-            <Route path="/stories/view/:id" element={<StoryView />} />
-            <Route path="/stories/create" element={<CreateStory />} />
-            <Route path="/notifications" element={<NotificationsPage />} />
+              {/* Social */}
+              <Route path="/stories/view/:id" element={<StoryView />} />
+              <Route path="/stories/create" element={<CreateStory />} />
+              <Route path="/notifications" element={<NotificationsPage />} />
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
         </AuthProvider>
       </AppModeProvider>
     </TooltipProvider>

@@ -725,17 +725,6 @@ of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction...
 ```
 
----
-
-## 👨‍💻 Author
-
-**Aman Gupta**
-
-- GitHub: [@amangupta](https://github.com/amangupta)
-- LinkedIn: [Aman Gupta](https://linkedin.com/in/amangupta)
-- Email: contact@lookdine.com
-
----
 
 ## 🙏 Acknowledgments
 
@@ -745,7 +734,6 @@ in the Software without restriction...
 - **React Team** - For the incredible framework
 - **Open Source Community** - For the tools and inspiration
 
-<<<<<<< HEAD
 ---
 
 ## 📞 Support

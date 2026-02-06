@@ -3,7 +3,6 @@ import { useDebounce } from '@/hooks/use-debounce';
 import { search } from '@/services/api/search';
 import { User } from '@/services/types/auth';
 import { Hotel } from '@/services/types/hotels';
-// import { searchHotels } from '@/services/api/api';
 
 interface SearchParams {
   query: string;
@@ -14,8 +13,9 @@ interface SearchParams {
 }
 
 interface SearchResult {
-  users:User[],
-  hotels:Hotel[]
+  data?: any;
+  users: User[];
+  hotels: Hotel[];
 }
 
 export const useSearch = () => {
@@ -24,20 +24,19 @@ export const useSearch = () => {
     category: 'all',
   });
   const [results, setResults] = useState<SearchResult>({
-    users:[],
-    hotels:[]
+    users: [],
+    hotels: [],
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Debounce the search query
   const debouncedQuery = useDebounce(searchParams.query, 300);
 
   const performSearch = useCallback(async () => {
     if (!debouncedQuery.trim()) {
       setResults({
-        users:[],
-        hotels:[]
+        users: [],
+        hotels: [],
       });
       return;
     }
@@ -46,28 +45,28 @@ export const useSearch = () => {
     setError(null);
 
     try {
-      const data = await search.get(debouncedQuery) as unknown as SearchResult;
-      setResults(data || {
-        users:[],
-        hotels:[]
+      const data = (await search.get(debouncedQuery)) as unknown as SearchResult;
+      setResults({
+        users: data?.data?.users || [],
+        hotels: data?.data?.hotels || [],
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Search failed');
       setResults({
-        users:[],
-        hotels:[]
+        users: [],
+        hotels: [],
       });
     } finally {
       setLoading(false);
     }
-  }, [debouncedQuery, searchParams]);
+  }, [debouncedQuery]);
 
   useEffect(() => {
     performSearch();
   }, [performSearch]);
 
   const updateSearchParam = (key: keyof SearchParams, value: any) => {
-    setSearchParams(prev => ({ ...prev, [key]: value }));
+    setSearchParams((prev) => ({ ...prev, [key]: value }));
   };
 
   return {

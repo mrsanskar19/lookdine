@@ -1,13 +1,5 @@
 import { useState } from 'react';
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { Home, MapPin, Calendar, MessageCircle, User, LogOut, ChevronLeft, ChevronRight, Search } from 'lucide-react';
-=======
 import { Home, MapPin, Calendar, MessageCircle, User, LogOut, ChevronLeft, ChevronRight, Search, BarChart3, Users } from 'lucide-react';
->>>>>>> 094e5ef (Updated project code)
-=======
-import { Home, MapPin, Calendar, MessageCircle, User, LogOut, ChevronLeft, ChevronRight, Search, BarChart3, Users } from 'lucide-react';
->>>>>>> 0895931 (Initial project setup)
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -38,21 +30,10 @@ export function Sidebar({ title }: SidebarProps) {
   const navItems = [
     { icon: Home, label: 'Home', path: '/' },
     { icon: Search, label: 'Search', path: '/search' },
-<<<<<<< HEAD
-<<<<<<< HEAD
-    { icon: MapPin, label: 'Nearby', path: '/nearby' },
-    { icon: Calendar, label: 'Book', path: '/book' },
-=======
-=======
->>>>>>> 0895931 (Initial project setup)
     { icon: MapPin, label: 'Explore', path: '/nearby' },
     { icon: Calendar, label: 'Book', path: '/book' },
     { icon: BarChart3, label: 'Dashboard', path: '/dashboard' },
     { icon: Users, label: 'Friends', path: '/friends' },
-<<<<<<< HEAD
->>>>>>> 094e5ef (Updated project code)
-=======
->>>>>>> 0895931 (Initial project setup)
     { icon: MessageCircle, label: 'Chat', path: '/chat' },
     { icon: User, label: 'Profile', path: '/profile' },
   ];
