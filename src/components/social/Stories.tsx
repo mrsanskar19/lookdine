@@ -156,7 +156,7 @@ export function Stories() {
                 "relative rounded-full p-[2.5px] transition-all duration-300 group-active:scale-90",
                 story.isViewed 
                   ? "bg-muted-foreground/20" 
-                  : "bg-gradient-to-tr from-yellow-400 via-orange-500 to-red-500 shadow-md shadow-orange-500/20 animate-pulse"
+                  : "bg-gradient-to-tr from-yellow-400 via-orange-500 to-red-500 shadow-md shadow-orange-500/20"
               )}>
                 <Avatar className="h-16 w-16 border-[3px] border-background transition-all">
                   <AvatarImage src={story.user.avatar} alt={story.user.name} className="object-cover" />

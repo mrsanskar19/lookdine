@@ -20,15 +20,19 @@ export function Header({ title }: HeaderProps) {
         
         {/* Left: Logo & Dynamic Title */}
         <div className="flex items-center gap-3">
-          <div
-            className={cn(
-              "flex h-8 w-8 items-center justify-center rounded font-bold text-white",
-              isTeenMode ? "bg-secorday" : "bg-primary"
-            )}
-            onClick={() => navigate('/')}
-          >
-            L
-          </div>
+        <div 
+  className="flex h-8 w-8 shrink-0 items-center justify-center rounded bg-primary font-bold text-white cursor-pointer overflow-hidden"
+  onClick={() => navigate('/')}
+  role="button"
+  aria-label="LookDine Home"
+>
+  <img 
+    src="favicon.png" 
+    alt="LookDine Logo" 
+    className="h-full w-full object-cover"
+    loading="lazy" 
+  />
+</div>
           <h1 className="text-lg font-bold tracking-tight truncate max-w-[150px]">
             {title || "LookDine"}
           </h1>

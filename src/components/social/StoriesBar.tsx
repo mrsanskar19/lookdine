@@ -64,7 +64,7 @@ export function StoriesBar({ stories, currentUserId, onCreateStory }: StoriesBar
                   "absolute inset-0 rounded-full p-0.5 bg-gradient-to-tr",
                   story.isViewed
                     ? "from-muted to-muted"
-                    : "from-pink-500 via-purple-500 to-indigo-500 animate-pulse"
+                    : "from-pink-500 via-purple-500 to-indigo-500"
                 )}
               >
                 <div className="w-full h-full rounded-full bg-background" />

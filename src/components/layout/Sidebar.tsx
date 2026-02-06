@@ -49,12 +49,19 @@ export function Sidebar({ title }: SidebarProps) {
       <div className="p-4 flex items-center justify-between min-h-[73px]">
         {!isCollapsed && (
           <div className="flex items-center gap-2 overflow-hidden">
-            <div 
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded bg-primary font-bold text-white cursor-pointer"
-              onClick={() => navigate('/')}
-            >
-              L
-            </div>
+           <div 
+  className="flex h-8 w-8 shrink-0 items-center justify-center rounded bg-primary font-bold text-white cursor-pointer overflow-hidden"
+  onClick={() => navigate('/')}
+  role="button"
+  aria-label="LookDine Home"
+>
+  <img 
+    src="favicon.png" 
+    alt="LookDine Logo" 
+    className="h-full w-full object-cover"
+    loading="lazy" 
+  />
+</div>
             <span className="text-lg font-bold truncate">
               {title || "LookDine"}
             </span>
